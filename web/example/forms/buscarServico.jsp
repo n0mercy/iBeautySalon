@@ -54,13 +54,13 @@
                   <span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Buscar de Serviços</h4>
               </div>
-               <form action="../../buscarServico.jsp" method="POST"> 
+               <form action="buscarServico.jsp" method="POST"> 
               <div class="login-box-body">
                 <p class="login-box-msg">Preencha o nome do serviço abaixo</p>
                  <div class="input-group input-group-sm">
                      <input type="text" name="txtserv" class="form-control"></input>
                     <span class="input-group-btn">
-                        <button type="button" class="btn btn-info btn-flat">Buscar</button>
+                        <button type="submit" class="btn btn-info btn-flat">Buscar</button>
                     </span>                                            
               </div>
         <!-- /.col -->
@@ -92,11 +92,16 @@
                          ResultSet rs;
                          Statement stm;                        
                          PreparedStatement pstm;
-                         String sql ="select *from servico;";
-                         String sql2="select * from servico where serv_desc like '%"+request.getParameter("txtserv")+"%'";
-                            pstm=con.prepareStatement(sql);
-                            rs=pstm.executeQuery(sql);
-                            rs.first();                                                       
+                         String sql = null;
+                         
+                         if(request.getParameter("txtserv") == null)
+                             sql = "select * from servico";
+                         else
+                             sql = "select * from servico where serv_desc like '%"+request.getParameter("txtserv")+"%'";                        
+                         
+                        pstm=con.prepareStatement(sql);
+                        rs=pstm.executeQuery(sql);
+                        rs.first();                                                       
                        if(rs.first()==false){
                     %>
                 <tr>

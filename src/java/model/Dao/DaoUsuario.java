@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Bean.BeanUsuario;
 import model.connection.Conexao;
 
@@ -22,21 +24,38 @@ public class DaoUsuario {
     Connection con = model.connection.Conexao.getConnection();
     PreparedStatement pstm;
     ResultSet rs;
+    BeanUsuario usuario = new BeanUsuario();
     
-     public void buscarUsuario(BeanUsuario usu){      
+     public BeanUsuario buscarUsuario(BeanUsuario usu){      
          try{           
-           con=Conexao.getConnection();          
-           String sql=" usu_email, tipo_desc from usuario inner join tipo_usuario on usu_tipo_codigo=tipo_codigo  where usu_status =? and usu_senha=? and usu_email = ?";           
-           usu.setUsu_status("Ativo");
+            con=Conexao.getConnection();          
+            String sql="select * from usuario inner join tipo_usuario on usu_tipo_codigo=tipo_codigo  where usu_status = ? and usu_email = ?";           
+            usu.setUsu_status("Ativo");
             pstm = con.prepareStatement(sql);           
             pstm.setString(1, usu.getUsu_status());
-            pstm.setString(2, usu.getUsu_senha());
-            pstm.setString(3, usu.getUsu_email());
-            pstm.executeQuery();                
-            System.out.println("Usuario encontrado com sucesso"+sql);                      
+            pstm.setString(2, usu.getUsu_email());
+            rs = pstm.executeQuery();
+            usuario = createUsuario(rs);
+            return usuario;                     
         }catch(SQLException | HeadlessException erro){
             System.out.println("Usuario não cadastrado" +erro.getMessage());            
+            return null;
         }       
     }
+     
+     private BeanUsuario createUsuario(ResultSet r){
+        try {
+            while (rs.next()) {
+                usuario.setUsu_codigo(rs.getInt("usu_codigo"));
+                usuario.setUsu_email(rs.getString("usu_email"));
+                usuario.setUsu_senha(rs.getString("usu_senha"));
+                usuario.setUsu_status("usu_status"); 
+            }
+            return usuario;
+        } catch (SQLException ex) {
+            Logger.getLogger(DaoUsuario.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+     }
     
 }
