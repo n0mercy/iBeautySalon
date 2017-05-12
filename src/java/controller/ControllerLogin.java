@@ -60,7 +60,8 @@ public class ControllerLogin extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        request.getSession().setAttribute("user", null);
+        response.sendRedirect("login/login.jsp");
     }
 
     /**
@@ -86,6 +87,7 @@ public class ControllerLogin extends HttpServlet {
             usuario = dao.buscarUsuario(usuario);
             System.out.println("Logado com sucesso!");
             request.getSession().setAttribute("user", usuario.getUsu_email());
+            request.getSession().setAttribute("role", usuario.getUsu_tipo_codigo().getTipo_codigo());
             response.sendRedirect("/iBeautySalon");
         }catch(Exception e){
             e.getMessage();

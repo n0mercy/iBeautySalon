@@ -44,7 +44,7 @@
         </div>
         <div class="pull-left info">
           <p> ${user} </p>
-          <a href="example/pages/login.jsp" onclick="window.close();" target="login.jsp"> <i class="fa fa-circle text-success"></i> Sair</a>
+          <a href="ControllerLogin" onclick="window.close();" target="login.jsp"> <i class="fa fa-circle text-success"></i> Sair</a>
         </div>
       </div>
       <!-- search form -->
@@ -70,8 +70,15 @@
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>            </span>          </a>
           <ul class="treeview-menu">
-              <li><a href="example/pages/buscarCep.jsp" target="mainFrame"><i class="fa fa-circle-o"></i> Buscar Salões</a></li>            
-               <li><a href="example/forms/cadClienteJuridica.jsp" target="mainFrame"><i class="fa fa-circle-o"></i> Alterar Salão</a></li>
+              <li><a href="example/pages/buscarCep.jsp" target="mainFrame"><i class="fa fa-circle-o"></i> Buscar Salões</a></li>
+              <%
+                  Integer role = (Integer)request.getSession().getAttribute("role");
+                if(role == 3){  
+              %>
+               <li ><a href="cadastros/cadClienteJuridica.jsp" target="mainFrame"><i class="fa fa-circle-o"></i> Alterar Salão</a></li>
+              <% 
+                }
+              %> 
           </ul>          
         </li> 
 <li class="treeview">
@@ -154,15 +161,16 @@
               <li><a href="example/forms/tipoUsuario.jsp" target="mainFrame" ><i class="fa fa-circle-o"></i> Consultar Usuários</a></li>                           
           </ul>            
         </li>
+        
         <li class="treeview">
           <li class="header">Sobre Nós</li>
         <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>IBeautySalon</span></a></li>  
         </li>
         <li class="treeview">          
-        <li><a href="#"><i class="fa fa-circle-o text-blue"></i> <span></span></a></li>  
+        <li><a href="#"><i class="fa fa-circle-o text-blue"></i> <span>Contatos</span></a></li>  
         </li>
         <li class="treeview">          
-        <li><a href="#"><i class="fa fa-circle-o text-aqua  "></i> <span></span></a></li>  
+        <li><a href="#"><i class="fa fa-circle-o text-aqua  "></i> <span>Trabalhe Conosco</span></a></li>  
         </li>
 </section>
    <div class="control-sidebar-bg"></div> 

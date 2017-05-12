@@ -26,7 +26,7 @@ public class DaoUsuario {
     ResultSet rs;
     BeanUsuario usuario = new BeanUsuario();
     
-     public BeanUsuario buscarUsuario(BeanUsuario usu){      
+     public BeanUsuario buscarUsuario(BeanUsuario usu) throws SQLException{      
          try{           
             con=Conexao.getConnection();          
             String sql="select * from usuario inner join tipo_usuario on usu_tipo_codigo=tipo_codigo  where usu_status = ? and usu_email = ?";           
@@ -38,9 +38,32 @@ public class DaoUsuario {
             usuario = createUsuario(rs);
             return usuario;                     
         }catch(SQLException | HeadlessException erro){
-            System.out.println("Usuario não cadastrado" +erro.getMessage());            
+            System.out.println("Usuario não encontrado" +erro.getMessage());            
             return null;
-        }       
+        }finally{
+             con.close();
+             rs.close();
+             pstm.close();
+         }       
+    }
+     
+     public BeanUsuario findByCodigo(int codigo) throws SQLException{      
+         try{           
+            con=Conexao.getConnection();          
+            String sql="select * from usuario inner join tipo_usuario on usu_tipo_codigo=tipo_codigo  where usu_codigo = ?";            
+            pstm = con.prepareStatement(sql);           
+            pstm.setInt(1, codigo);
+            rs = pstm.executeQuery();
+            usuario = createUsuario(rs);
+            return usuario;                     
+        }catch(SQLException | HeadlessException erro){
+            System.out.println("Usuario não encontrado" +erro.getMessage());            
+            return null;
+        }finally{
+             con.close();
+             rs.close();
+             pstm.close();
+         }        
     }
      
      private BeanUsuario createUsuario(ResultSet r){
@@ -50,6 +73,8 @@ public class DaoUsuario {
                 usuario.setUsu_email(rs.getString("usu_email"));
                 usuario.setUsu_senha(rs.getString("usu_senha"));
                 usuario.setUsu_status("usu_status"); 
+                usuario.setUsu_end_cep(new DaoEndereco().findByCodigo(rs.getInt("usu_end_cep")));
+                usuario.setUsu_tipo_codigo(new DaoTipoUsuario().findByCodigo(rs.getInt("usu_tipo_codigo")));
             }
             return usuario;
         } catch (SQLException ex) {

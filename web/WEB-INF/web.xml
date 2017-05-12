@@ -19,6 +19,14 @@
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>example/index.jsp</welcome-file>
     </welcome-file-list>
+    <filter>
+            <filter-name>Filter Login</filter-name>
+            <filter-class>controller.FilterLogin</filter-class>
+      </filter>
+      <filter-mapping>
+            <filter-name>Filter Login</filter-name>
+            <url-pattern>/example/*</url-pattern>
+      </filter-mapping>
 </web-app>

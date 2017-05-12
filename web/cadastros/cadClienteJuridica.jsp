@@ -1,3 +1,14 @@
+<%@page import="model.Dao.DaoZona"%>
+<%@page import="model.Dao.DaoUsuario"%>
+<%@page import="model.Dao.DaoCep"%>
+<%@page import="model.Dao.DaoEndereco"%>
+<%@page import="model.Dao.DaoFones"%>
+<%@page import="model.Bean.BeanZona"%>
+<%@page import="model.Bean.BeanFones"%>
+<%@page import="model.Bean.BeanCep"%>
+<%@page import="model.Bean.BeanEndereco"%>
+<%@page import="model.Bean.BeanTipoUsuario"%>
+<%@page import="model.Bean.BeanUsuario"%>
 <%@page import="java.sql.Statement"%>
 <%@page import="java.sql.Connection"%>
 <%@page import="java.sql.PreparedStatement"%>
@@ -16,16 +27,16 @@
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
             <!-- Bootstrap 3.3.6 -->
-            <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css">
+            <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
                 <!-- Font Awesome -->
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
                     <!-- Ionicons -->
                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
                         <!-- Theme style -->
-                        <link rel="stylesheet" href="../../dist/css/AdminLTE.min.css">
+                        <link rel="stylesheet" href="../dist/css/AdminLTE.min.css">
                             <!-- AdminLTE Skins. Choose a skin from the css/skins
                                  folder instead of downloading all of them to reduce the load. -->
-                            <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
+                            <link rel="stylesheet" href="../dist/css/skins/_all-skins.min.css">
 
                                 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
                                 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -54,13 +65,17 @@
                                 <body  >
                                     <%
                                         BeanEmpresa emp = new BeanEmpresa();
-                                        DaoEmpresa daoemp = new DaoEmpresa();
+                                        BeanUsuario user = new BeanUsuario();
+                                        BeanEndereco end = new BeanEndereco();
+                                        BeanCep cep = new BeanCep();
+                                        BeanFones fone = new BeanFones();
+                                        BeanZona zona = new BeanZona();
                                         Connection con = Conexao.getConnection();
                                         String usuario = null;
                                         ResultSet rs;
                                         String sql = null;
                                         PreparedStatement pstm;
-                                        if(request.getSession().getAttribute("user") != null){
+                                        if (request.getSession().getAttribute("user") != null) {
                                             usuario = request.getSession().getAttribute("user").toString();
                                         }
                                         if (usuario != null) {
@@ -76,13 +91,32 @@
                                         } else {
                                             out.println("Usuario nulo");
                                         }
-                                        pstm = con.prepareStatement(sql);
-                                        rs = pstm.executeQuery(sql);
-                                        rs.first();
-                                        if (rs.first() == false) {
-                                                out.println("Error");
-                                        } else {
-                                            do {
+                                        if (sql != null) {
+                                            pstm = con.prepareStatement(sql);
+                                            rs = pstm.executeQuery(sql);
+                                            rs.first();
+
+                                            if (rs.first() == false) {
+                                                out.println("Error ao pegar user da session");
+                                            } else {
+                                                do {
+                                                    emp = new DaoEmpresa().findByCnpj(rs.getString("emp_cnpj"));
+                                                    user = new DaoUsuario().findByCodigo(rs.getInt("emp_usu_codigo"));
+                                                    fone = new DaoFones().findByUser(rs.getInt("usu_codigo"));
+
+                                                    if (request.getParameter("pCep") != null) {
+                                                        cep = new DaoCep().findByCodigo(Integer.parseInt(request.getParameter("pCep")));                                                        
+                                                        end = new DaoEndereco().findByCep(cep.getCep_cep());
+                                                        out.println("1");
+                                                    } else {
+                                                        cep = new DaoCep().findByCodigo(rs.getInt("end_cep"));
+                                                        end = new DaoEndereco().findByCep(rs.getString("end_cep"));
+                                                        out.println("2");
+                                                    }
+                                                    zona = new DaoZona().findByCodigo(rs.getInt("bai_zona_cod"));
+                                                } while (rs.next());
+                                            }
+                                        }
                                     %>
                                     <div class="wrapper">
                                         <!-- /.example-modal -->
@@ -99,21 +133,21 @@
                                                         <div class="modal-body">
                                                             <div class="form-group">
                                                                 <label>Razão Social</label>
-                                                                <input type="text" value="<%=rs.getString("emp_razao")%>"  class="form-control" placeholder="Razão"/>
+                                                                <input type="text" value="<%=emp.getEmp_razao()%>"  class="form-control" placeholder="Razão"/>
                                                             </div>
                                                             <label>Cnpj</label>
                                                             <div class="input-group">
                                                                 <div class="input-group-addon">
                                                                     <i class="fa fa-university"></i>
                                                                 </div>
-                                                                <input type="text" name="inscestadual" value="<%=rs.getString("emp_cnpj")%>" class="form-control"  data-inputmask="'insc estadual'" data-mask/>
+                                                                <input type="text" name="inscestadual" value="<%=emp.getEmp_razao()%>" class="form-control"  data-inputmask="'insc estadual'" data-mask/>
                                                             </div>                                                
                                                             <label>Inscrição Estadual</label>
                                                             <div class="input-group">
                                                                 <div class="input-group-addon">
                                                                     <i class="fa fa-building-o"></i>
                                                                 </div>
-                                                                <input type="text" name="inscestadual" value="<%=rs.getString("emp_insc_estadual")%>" class="form-control"  data-inputmask="'insc estadual'" data-mask>
+                                                                <input type="text" name="inscestadual" value="<%=emp.getEmp_insc_estadual()%>" class="form-control"  data-inputmask="'insc estadual'" data-mask>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label>Fones</label>
@@ -122,7 +156,7 @@
                                                                     <div class="input-group-addon">
                                                                         <i class="fa fa-phone"></i>
                                                                     </div>
-                                                                    <input type="text" class="form-control" value="<%=rs.getString("fon_fones")%>"  data-inputmask='"mask": "(92) 99999-9999"' data-mask/>
+                                                                    <input type="text" class="form-control" value="<%= fone.getFon_fones()%>"  data-inputmask='"mask": "(92) 99999-9999"' data-mask/>
 
                                                                     <input type="text" class="form-control" data-inputmask='"mask": "(92) 99999-9999"' data-mask/>
                                                                 </div>                                                           
@@ -130,9 +164,11 @@
                                                             <div class="form-group">                
                                                                 <label>Cep</label>
                                                                 <div class="input-group">
-                                                                    <input type="text"  class="form-control" value="<%=rs.getString("cep_cep")%>" data-inputmask='"mask": "99999-999"' data-mask/>                    <span class="input-group-btn">
-                                                                        <button type="button" class="btn btn-info btn-flat">Buscar</button>
-                                                                    </span>                                            
+                                                                    <form method="GET" action="cadClienteJuridica.jsp">
+                                                                        <input type="text"  class="form-control" name="pCep" value="<%= cep.getCep_cep()%>" data-inputmask='"mask": "99999-999"' data-mask/>                    <span class="input-group-btn">
+                                                                            <button type="submit" class="btn btn-info btn-flat">Buscar</button>
+                                                                        </span> 
+                                                                    </form>
                                                                 </div>                                                  
                                                             </div>
                                                             <!-- SELECT2 EXAMPLE -->
@@ -151,12 +187,12 @@
                                                                             <!-- /.form-group -->
                                                                             <div class="form-group">
                                                                                 <label>Referência</label>
-                                                                                <input type="text" value="<%=rs.getString("end_ref")%>" class="form-control" placeholder="Ponto de Referência"/>
+                                                                                <input type="text" value="<%= end.getEnd_ref()%>" class="form-control" placeholder="Ponto de Referência"/>
                                                                             </div>
 
                                                                             <div class="form-group">
                                                                                 <label>Número</label>
-                                                                                <input type="text" class="form-control" value="<%=rs.getString("end_num")%>" placeholder="N°"/>
+                                                                                <input type="text" class="form-control" value="<%= end.getEnd_num()%>" placeholder="N°"/>
                                                                             </div>
                                                                             <!-- /.form-group -->
                                                                         </div>
@@ -185,7 +221,7 @@
                                                                         <div class="form-group">
                                                                             <div class="form-group">
                                                                                 <label>Rua</label>
-                                                                                <input type="text" value="<%=rs.getString("cep_rua")%>" class="form-control" disabled="disabled" placeholder="Rua">
+                                                                                <input type="text" value="<%= cep.getRua()%>" class="form-control" disabled="disabled" placeholder="Rua">
                                                                             </div>
 
                                                                         </div>
@@ -197,11 +233,11 @@
                                                             </div>
                                                             <div class="form-group">
                                                                 <label for="exampleInputEmail1">Email</label>
-                                                                <input type="email" class="form-control" value="<%=rs.getString("usu_email")%>" id="exampleInputEmail1" placeholder="Email"/>
+                                                                <input type="email" class="form-control" value="<%= user.getUsu_email()%>" id="exampleInputEmail1" placeholder="Email"/>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label for="exampleInputPassword1">Senha</label>
-                                                                <input type="password" class="form-control" value="<%=rs.getString("usu_senha")%>" id="exampleInputPassword1" placeholder="Senha"/>
+                                                                <input type="password" class="form-control" value="<%= user.getUsu_senha()%>" id="exampleInputPassword1" placeholder="Senha"/>
                                                             </div>     
                                                             <div class="form-group">
                                                                 <label for="exampleInputPassword1">Confirmar Senha</label>
@@ -220,19 +256,16 @@
                                         </div>
                                         <!-- /.modal -->
                                     </div>
-                                    <%
-                                                                                    } while (rs.next());
-                                                                                }%> 
                                     <!-- ./wrapper -->
                                     <!-- jQuery 2.2.3 -->
-                                    <script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
+                                    <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
                                     <!-- Bootstrap 3.3.6 -->
-                                    <script src="../../bootstrap/js/bootstrap.min.js"></script>
+                                    <script src="../bootstrap/js/bootstrap.min.js"></script>
                                     <!-- FastClick -->
-                                    <script src="../../plugins/fastclick/fastclick.js"></script>
+                                    <script src="../plugins/fastclick/fastclick.js"></script>
                                     <!-- AdminLTE App -->
-                                    <script src="../../dist/js/app.min.js"></script>
+                                    <script src="../dist/js/app.min.js"></script>
                                     <!-- AdminLTE for demo purposes -->
-                                    <script src="../../dist/js/demo.js"></script>
+                                    <script src="../dist/js/demo.js"></script>
                                 </body>
                                 </html>
