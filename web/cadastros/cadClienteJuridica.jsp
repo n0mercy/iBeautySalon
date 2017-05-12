@@ -1,3 +1,7 @@
+<%@page import="model.Dao.DaoBairro"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="model.Bean.BeanBairro"%>
 <%@page import="model.Dao.DaoZona"%>
 <%@page import="model.Dao.DaoUsuario"%>
 <%@page import="model.Dao.DaoCep"%>
@@ -88,9 +92,8 @@
                                                     + "bairro on cep_bai_codigo=bai_codigo inner join "
                                                     + "zona on bai_zona_cod=zona_cod "
                                                     + "where usu_status='Ativo' and usu_email = '" + usuario + "';";
-                                        } else {
-                                            out.println("Usuario nulo");
                                         }
+
                                         if (sql != null) {
                                             pstm = con.prepareStatement(sql);
                                             rs = pstm.executeQuery(sql);
@@ -104,8 +107,8 @@
                                                     user = new DaoUsuario().findByCodigo(rs.getInt("emp_usu_codigo"));
                                                     fone = new DaoFones().findByUser(rs.getInt("usu_codigo"));
 
-                                                    if (request.getParameter("pCep") != null) {
-                                                        cep = new DaoCep().findByCodigo(Integer.parseInt(request.getParameter("pCep")));                                                        
+                                                    if (request.getParameter("cep") != null) {
+                                                        cep = new DaoCep().findByCodigo(Integer.parseInt(request.getParameter("cep")));
                                                         end = new DaoEndereco().findByCep(cep.getCep_cep());
                                                         out.println("1");
                                                     } else {
@@ -115,145 +118,163 @@
                                                     }
                                                     zona = new DaoZona().findByCodigo(rs.getInt("bai_zona_cod"));
                                                 } while (rs.next());
+
                                             }
+
                                         }
                                     %>
                                     <div class="wrapper">
                                         <!-- /.example-modal -->
-
-                                        <div class="example-modal ">
-                                            <div class="modal">           
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span></button>
-                                                            <h4 class="modal-title">Cadastro Pessoa Jurídica</h4>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="form-group">
-                                                                <label>Razão Social</label>
-                                                                <input type="text" value="<%=emp.getEmp_razao()%>"  class="form-control" placeholder="Razão"/>
+                                        <form data-toggle="validator" role="form">
+                                            <div class="example-modal ">
+                                                <div class="modal">           
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span></button>
+                                                                <h4 class="modal-title">Cadastro Pessoa Jurídica</h4>
                                                             </div>
-                                                            <label>Cnpj</label>
-                                                            <div class="input-group">
-                                                                <div class="input-group-addon">
-                                                                    <i class="fa fa-university"></i>
+                                                            <div class="modal-body">
+                                                                <div class="form-group">
+                                                                    <label>Razão Social</label>
+                                                                    <input type="text" name="razao" value="<%= (emp.getEmp_razao() != null) ? emp.getEmp_razao() : ""%>"  class="form-control" placeholder="Razão"/>
                                                                 </div>
-                                                                <input type="text" name="inscestadual" value="<%=emp.getEmp_razao()%>" class="form-control"  data-inputmask="'insc estadual'" data-mask/>
-                                                            </div>                                                
-                                                            <label>Inscrição Estadual</label>
-                                                            <div class="input-group">
-                                                                <div class="input-group-addon">
-                                                                    <i class="fa fa-building-o"></i>
-                                                                </div>
-                                                                <input type="text" name="inscestadual" value="<%=emp.getEmp_insc_estadual()%>" class="form-control"  data-inputmask="'insc estadual'" data-mask>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label>Fones</label>
-
+                                                                <label>Cnpj</label>
                                                                 <div class="input-group">
                                                                     <div class="input-group-addon">
-                                                                        <i class="fa fa-phone"></i>
+                                                                        <i class="fa fa-university"></i>
                                                                     </div>
-                                                                    <input type="text" class="form-control" value="<%= fone.getFon_fones()%>"  data-inputmask='"mask": "(92) 99999-9999"' data-mask/>
-
-                                                                    <input type="text" class="form-control" data-inputmask='"mask": "(92) 99999-9999"' data-mask/>
-                                                                </div>                                                           
-                                                            </div>
-                                                            <div class="form-group">                
-                                                                <label>Cep</label>
+                                                                    <input type="text" placeholder="Cnpj" name="cnpj" value="<%= emp.getEmp_razao() != null ? emp.getEmp_razao() : ""%>" class="form-control"  data-inputmask="'insc estadual'" data-mask/>
+                                                                </div>                                                
+                                                                <label>Inscrição Estadual</label>
                                                                 <div class="input-group">
-                                                                    <form method="GET" action="cadClienteJuridica.jsp">
-                                                                        <input type="text"  class="form-control" name="pCep" value="<%= cep.getCep_cep()%>" data-inputmask='"mask": "99999-999"' data-mask/>                    <span class="input-group-btn">
-                                                                            <button type="submit" class="btn btn-info btn-flat">Buscar</button>
-                                                                        </span> 
-                                                                    </form>
-                                                                </div>                                                  
-                                                            </div>
-                                                            <!-- SELECT2 EXAMPLE -->
-                                                            <div class="box box-default">
-                                                                <div class="box-header with-border">
-                                                                    <h3 class="box-title">Endereço</h3>
-
-                                                                    <div class="box-tools pull-right">
-                                                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>            
+                                                                    <div class="input-group-addon">
+                                                                        <i class="fa fa-building-o"></i>
                                                                     </div>
+                                                                    <input type="text" name="inscestadual" value="<%=emp.getEmp_insc_estadual() != null ? emp.getEmp_insc_estadual() : ""%>" placeholder="Inscrição Estadual" class="form-control"  data-inputmask="'insc estadual'" data-mask>
                                                                 </div>
-                                                                <!-- /.box-header -->
-                                                                <div class="box-body">
-                                                                    <div class="row">
-                                                                        <div class="col-md-6">              
-                                                                            <!-- /.form-group -->
-                                                                            <div class="form-group">
-                                                                                <label>Referência</label>
-                                                                                <input type="text" value="<%= end.getEnd_ref()%>" class="form-control" placeholder="Ponto de Referência"/>
-                                                                            </div>
+                                                                <div class="form-group">
+                                                                    <label>Fones</label>
 
-                                                                            <div class="form-group">
-                                                                                <label>Número</label>
-                                                                                <input type="text" class="form-control" value="<%= end.getEnd_num()%>" placeholder="N°"/>
-                                                                            </div>
-                                                                            <!-- /.form-group -->
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-addon">
+                                                                            <i class="fa fa-phone"></i>
                                                                         </div>
-                                                                        <!-- /.col -->
-                                                                        <div class="col-md-6">
-                                                                            <div class="form-group">
-                                                                                <label>Bairro</label>
-                                                                                <select class="form-control select2" disabled="disabled" style="width: 100%;">
-                                                                                    <option selected="selected">Compensa 1</option>
-                                                                                    <option>Alvorada</option>
-                                                                                    <option>Colonia</option>                  
-                                                                                </select>
-                                                                            </div>
+                                                                        <input type="text" name="telefone1" placeholder="Phone 1" class="form-control" value="<%= fone.getFon_fones() != null ? fone.getFon_fones() : ""%>"  data-inputmask='"mask": "(92) 99999-9999"' data-mask/>
 
-                                                                            <div class="form-group">
-                                                                                <label>Zona</label>
-                                                                                <select class="form-control select2" disabled="disabled" style="width: 100%;">
-                                                                                    <option selected="selected">Oeste</option>
-                                                                                    <option>Norte</option>
-                                                                                    <option>Sul</option>                  
-                                                                                </select>
-                                                                            </div>            
-                                                                            <!-- /.form-group -->
+                                                                        <input type="text" name="telefone2" placeholder="Phone 2" class="form-control" data-inputmask='"mask": "(92) 99999-9999"' data-mask/>
+                                                                    </div>                                                           
+                                                                </div>
+                                                                <div class="form-group">                
+                                                                    <label>Cep</label>
+                                                                    <div class="input-group">
+                                                                        <form method="GET" action="cadClienteJuridica.jsp">
+                                                                            <input type="text" placeholder="Cep" class="form-control" name="cep" value="<%= cep.getCep_cep() != null ? cep.getCep_cep() : ""%>" data-inputmask='"mask": "99999-999"' data-mask/>                    <span class="input-group-btn">
+                                                                                <button type="submit" class="btn btn-info btn-flat">Buscar</button>
+                                                                            </span> 
+                                                                        </form>
+                                                                    </div>                                                  
+                                                                </div>
+                                                                <!-- SELECT2 EXAMPLE -->
+                                                                <div class="box box-default">
+                                                                    <div class="box-header with-border">
+                                                                        <h3 class="box-title">Endereço</h3>
 
+                                                                        <div class="box-tools pull-right">
+                                                                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>            
                                                                         </div>
-                                                                        <div class="form-group">
-                                                                            <div class="form-group">
-                                                                                <label>Rua</label>
-                                                                                <input type="text" value="<%= cep.getRua()%>" class="form-control" disabled="disabled" placeholder="Rua">
-                                                                            </div>
-
-                                                                        </div>
-                                                                        <!-- /.col -->            
                                                                     </div>
-                                                                    <!-- /.row -->
+                                                                    <!-- /.box-header -->
+                                                                    <div class="box-body">
+                                                                        <div class="row">
+                                                                            <div class="col-md-6">              
+                                                                                <!-- /.form-group -->
+                                                                                <div class="form-group">
+                                                                                    <label>Referência</label>
+                                                                                    <input type="text" name="ref" value="<%= end.getEnd_ref() != null ? end.getEnd_ref() : ""%>" class="form-control" placeholder="Ponto de Referência"/>
+                                                                                </div>
+
+                                                                                <div class="form-group">
+                                                                                    <label>Número</label>
+                                                                                    <input type="text" name="numero" class="form-control" value="<%= end.getEnd_num() != null ? end.getEnd_num() : ""%>" placeholder="N°"/>
+                                                                                </div>
+                                                                                <!-- /.form-group -->
+                                                                            </div>
+                                                                            <!-- /.col -->
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Bairro</label>
+                                                                                    <select name="bairro" class="form-control select2" style="width: 100%;">
+                                                                                        <%
+                                                                                            List<BeanBairro> bairros = new ArrayList<BeanBairro>();
+                                                                                            bairros = new DaoBairro().findAll();
+                                                                                            for (BeanBairro b : bairros) {
+                                                                                        %>
+                                                                                        <option value="<%= b.getBai_codigo()%>" selected="selected"><%= b.getBai_nome()%></option>               
+                                                                                        <%
+                                                                                            }
+                                                                                        %>
+                                                                                    </select>
+                                                                                </div>
+
+                                                                                <div class="form-group">
+                                                                                    <label>Zona</label>
+                                                                                    <select name="zona" class="form-control select2" style="width: 100%;">
+                                                                                        <%
+                                                                                            List<BeanZona> zonas = new ArrayList<BeanZona>();
+                                                                                            zonas = new DaoZona().findAll();
+                                                                                            for (BeanZona z : zonas) {
+                                                                                        %>
+                                                                                        <option value="<%= z.getZona_cod()%>" selected="selected"><%= z.getZona_nome()%></option>               
+                                                                                        <%
+                                                                                            }
+                                                                                        %>
+                                                                                    </select>
+                                                                                </div>            
+                                                                                <!-- /.form-group -->
+
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <div class="form-group">
+                                                                                    <label>Rua</label>
+                                                                                    <input type="text" name="rua" value="<%= cep.getRua() != null ? cep.getRua() : ""%>" class="form-control" placeholder="Rua">
+                                                                                </div>
+
+                                                                            </div>
+                                                                            <!-- /.col -->            
+                                                                        </div>
+                                                                        <!-- /.row -->
+                                                                    </div>
+                                                                    <!-- /.box-body -->        
                                                                 </div>
-                                                                <!-- /.box-body -->        
+                                                                <div class="form-group has-feedback">
+                                                                    <label for="exampleInputEmail1">Email</label>
+                                                                    <input type="email" class="form-control" name="email" value="<%= user.getUsu_email() != null ? user.getUsu_email() : ""%>" id="exampleInputEmail1" placeholder="Email"/>                                                                    
+                                                                    
+                                                                </div>
+                                                                <div class="form-group has-feedback">
+                                                                    <label for="exampleInputPassword1">Senha</label>
+                                                                    <input type="password" data-minlength="6" required class="form-control" name="senha" value="<%= user.getUsu_senha() != null ? user.getUsu_senha() : ""%>" id="exampleInputPassword1" placeholder="Senha"/>
+                                                                    <div class="help-block">Minimum of 6 characters</div>
+                                                                </div>     
+                                                                <div class="form-group has-feedback">
+                                                                    <label for="exampleInputPassword1">Confirmar Senha</label>
+                                                                    <input type="password" class="form-control" name="senha2"  data-match="#exampleInputPassword1" data-match-error="Pera viado, senhas estão diferentes :D" id="exampleInputPasswordConfirm" required placeholder="Senha"/>
+                                                                    <div class="help-block with-errors"></div>
+                                                                </div>    
                                                             </div>
-                                                            <div class="form-group">
-                                                                <label for="exampleInputEmail1">Email</label>
-                                                                <input type="email" class="form-control" value="<%= user.getUsu_email()%>" id="exampleInputEmail1" placeholder="Email"/>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label for="exampleInputPassword1">Senha</label>
-                                                                <input type="password" class="form-control" value="<%= user.getUsu_senha()%>" id="exampleInputPassword1" placeholder="Senha"/>
-                                                            </div>     
-                                                            <div class="form-group">
-                                                                <label for="exampleInputPassword1">Confirmar Senha</label>
-                                                                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Senha">
-                                                            </div>    
                                                         </div>
-                                                    </div>
-                                                    <div class="modal-footer">               
-                                                        <button type="button" class="btn btn-block btn-default btn-flat btn btn-primary pull-left">Salvar Empresa</button>                               
-                                                    </div>
+                                                        <div class="modal-footer">               
+                                                            <button type="button" class="btn btn-block btn-default btn-flat btn btn-primary pull-left">Salvar Empresa</button>                               
+                                                        </div>
 
+                                                    </div>
+                                                    <!-- /.modal-content -->
                                                 </div>
-                                                <!-- /.modal-content -->
+                                                <!-- /.modal-dialog -->
                                             </div>
-                                            <!-- /.modal-dialog -->
-                                        </div>
+                                        </form>
                                         <!-- /.modal -->
                                     </div>
                                     <!-- ./wrapper -->

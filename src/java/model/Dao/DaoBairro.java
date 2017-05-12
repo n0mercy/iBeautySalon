@@ -10,9 +10,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Bean.BeanBairro;
+import model.Bean.BeanZona;
 import model.connection.Conexao;
 
 /**
@@ -20,41 +24,125 @@ import model.connection.Conexao;
  * @author VaiDiegoo
  */
 public class DaoBairro {
+
     Connection con = Conexao.getConnection();
     PreparedStatement pstm;
     ResultSet rs;
-    BeanBairro bairro = new BeanBairro();
-    
-    public BeanBairro findByCodigo(int codigo) throws SQLException{      
-         try{           
-            con = Conexao.getConnection();          
-            String sql="select * from bairro where bai_codigo = ?";            
-            pstm = con.prepareStatement(sql);           
+    BeanBairro bairro;
+    List<BeanBairro> list;
+
+    public BeanBairro findByCodigo(int codigo) throws SQLException {
+        try {
+            con = Conexao.getConnection();
+            String sql = "select * from bairro where bai_codigo = ?";
+            pstm = con.prepareStatement(sql);
             pstm.setInt(1, codigo);
             rs = pstm.executeQuery();
             bairro = createBairro(rs);
-            return bairro;                     
-        }catch(SQLException | HeadlessException erro){
-            System.out.println("Bairro não encontrado" +erro.getMessage());            
+            return bairro;
+        } catch (SQLException | HeadlessException erro) {
+            System.out.println("Bairro não encontrado" + erro.getMessage());
             return null;
-        }finally{
-             con.close();
-             rs.close();
-             pstm.close();
-         }        
+        } finally {
+            if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
+            }
+        }
     }
-     
-     private BeanBairro createBairro(ResultSet r){
+
+    private BeanBairro createBairro(ResultSet r) {
         try {
+            list = new ArrayList<>();
             while (rs.next()) {
+                bairro = new BeanBairro();
                 bairro.setBai_codigo(r.getInt("bai_codigo"));
-                bairro.setBai_nome(r.getString("bai_nome")); 
-                bairro.setBai_zona_cod(new DaoZona().findByCodigo(r.getInt("bai_zona_cod"))); 
+                bairro.setBai_nome(r.getString("bai_nome"));
+                bairro.setBai_zona_cod(new DaoZona().findByCodigo(r.getInt("bai_zona_cod")));
+                list.add(bairro);
             }
             return bairro;
         } catch (SQLException ex) {
             Logger.getLogger(DaoBairro.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-     }
+    }
+
+    public List<BeanBairro> findAll() throws SQLException {
+        try {
+            con = Conexao.getConnection();
+            String sql = "select * from bairro";
+            pstm = con.prepareStatement(sql);
+            rs = pstm.executeQuery();
+            bairro = createBairro(rs);//task list bairros
+            return list;
+        } catch (SQLException | HeadlessException erro) {
+            System.out.println("Bairro não encontrado" + erro.getMessage());
+            return null;
+        } finally {
+            if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
+            }
+        }
+    }
+    
+    public void save(BeanBairro bairro) throws SQLException {
+        try {
+            if (bairro.getBai_codigo()== 0) {
+                pstm = con.prepareStatement("insert into bairro(bai_nome, bai_zona_cod) values (?,?)", Statement.RETURN_GENERATED_KEYS);
+            } else {
+                pstm = con.prepareStatement("update bairro set bai_nome = ?, bai_zona_cod = ? where bai_codigo = ?");
+            }
+
+            pstm.setString(1, bairro.getBai_nome());
+            pstm.setLong(2, bairro.getBai_zona_cod().getZona_cod());
+            if (bairro.getBai_codigo()> 0)//update
+            {
+                pstm.setLong(3, bairro.getBai_codigo());
+            }
+
+            int count = pstm.executeUpdate();
+            
+            if (count == 0) {
+                throw new SQLException("Erro ao inserir o bairro");
+            }
+
+            if (bairro.getBai_codigo()== 0) {
+                bairro.setBai_codigo(getGeneratedId(pstm));
+            }
+        } finally {
+            if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+        }
+    }
+
+    public static int getGeneratedId(Statement stmt) throws SQLException {
+        ResultSet rs = stmt.getGeneratedKeys();
+        if (rs.next()) {
+            int id = rs.getInt(1);
+            return id;
+        }
+        return 0;
+    }
 }
