@@ -10,8 +10,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Bean.BeanCep;
 import model.Bean.BeanCep;
 import model.connection.Conexao;
 
@@ -58,4 +60,41 @@ public class DaoCep {
             return null;
         }
      }
+     
+     public void save(BeanCep cep, boolean up) throws SQLException {
+        try {
+            if (!up) {
+                pstm = con.prepareStatement("insert into cep(cep_cep,cep_rua,cep_bai_codigo) values (?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            } else {
+                pstm = con.prepareStatement("update cep set cep_cep = ?, cep_rua = ?, cep_bai_codigo = ? where cep_cep = ?");
+            }
+            
+            pstm.setString(1, cep.getCep_cep());
+            pstm.setString(2, cep.getRua());
+            pstm.setInt(3, cep.getCep_bai_codigo().getBai_codigo());
+            if (up)//update
+            {
+                pstm.setString(4, cep.getCep_cep());
+            }
+
+            int count = pstm.executeUpdate();
+            
+            if (count == 0) {
+                throw new SQLException("Erro ao inserir o cep");
+            }
+            
+        } finally {
+            if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
+            }
+        }
+    }
 }
