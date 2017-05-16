@@ -62,7 +62,7 @@
                 <form>
                <!-- Date range -->
               <div class="form-group">
-                <label>Date range:</label>
+                <label>Período:</label>
 
                 <div class="input-group">
                   <div class="input-group-addon">

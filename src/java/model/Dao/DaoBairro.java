@@ -109,10 +109,10 @@ public class DaoBairro {
             }
 
             pstm.setString(1, bairro.getBai_nome());
-            pstm.setLong(2, bairro.getBai_zona_cod().getZona_cod());
+            pstm.setInt(2, bairro.getBai_zona_cod().getZona_cod());
             if (bairro.getBai_codigo()> 0)//update
             {
-                pstm.setLong(3, bairro.getBai_codigo());
+                pstm.setInt(3, bairro.getBai_codigo());
             }
 
             int count = pstm.executeUpdate();
