@@ -23,7 +23,7 @@ public class Conexao {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             String url="jdbc:mysql://localhost:3306/ibeautysalon";
             String login="root";
-            String senha="1234";
+            String senha="cavalo14";
             con=DriverManager.getConnection(url, login, senha);
            // System.out.println("conectado");
         }catch(ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException erro){
