@@ -149,7 +149,7 @@
             <div class="row no-print">
                 <div class="col-xs-12">
                     <a href="invoice-print.html" target="_blank" class="btn btn-default"><i class="fa fa-print"></i> Imprimir</a>
-                    <button type="button" class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Pagamento
+                    <button type="button" class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Carrinho
                     </button>
                     <button type="button" class="btn btn-danger pull-right" style="margin-right: 5px;">
                         <i class="fa fa-download"></i> Cancelar

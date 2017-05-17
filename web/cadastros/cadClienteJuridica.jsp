@@ -170,7 +170,7 @@
                                                                     <label>Cep</label>
                                                                     <div class="input-group">
                                                                         <form method="GET" action="cadClienteJuridica.jsp">
-                                                                            <input type="text" placeholder="Cep" class="form-control" name="cep" value="<%= cep.getCep_cep() != null ? cep.getCep_cep() : ""%>" data-inputmask='"mask": "99999-999"' data-mask/>                    <span class="input-group-btn">
+                                                                            <input type="text" placeholder="Cep" class="form-control" name="cep" value="<%= cep.getCep_cep() != null ? cep.getCep_cep() : ""%>" data-inputmask='"mask": "99999-999"' data-mask/><span class="input-group-btn">
                                                                                 <button type="submit" class="btn btn-info btn-flat">Buscar</button>
                                                                             </span> 
                                                                         </form>
