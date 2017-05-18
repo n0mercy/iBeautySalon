@@ -79,6 +79,7 @@
                             <script src="../dist/js/app.min.js"></script>
                             <!-- AdminLTE for demo purposes -->
                             <script src="../dist/js/demo.js"></script>
+                            <script src="../bootstrap/js//validator.min.js"></script>
                             <script>
                                 $(document).ready(function () {
                                     $("#submit").click(function (event) {
@@ -104,7 +105,7 @@
                             <body>
                                 <div class="wrapper">
                                     <!-- /.example-modal -->
-                                    <form action="../ControllerCliente" id="form-main" name="form1" method="POST" role="form">
+                                    <form action="../ControllerCliente" id="form-main" name="form1" method="POST" role="form" data-toggle="validator">
                                         <input type="hidden" value="cadClienteJuridico" name="save"/>
                                         <div class="example-modal ">
                                             <div class="modal">           
@@ -212,21 +213,23 @@
                                                                 <!-- /.box-body -->        
                                                             </div>
                                                             <div class="form-group has-feedback">
-                                                                <label for="exampleInputEmail1">Email</label>
-                                                                <input type="email" class="form-control" name="email" id="exampleInputEmail1" placeholder="Email"/>                                                                    
+                                                                <label for="email">Email</label>
+                                                                <input type="email" class="form-control" name="email" id="email" placeholder="Email"/>                                                                    
                                                                 <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                                                             </div>
                                                             <div class="form-group has-feedback">
-                                                                <label for="exampleInputPassword1">Senha</label>
-                                                                <input type="password" data-minlength="6" class="form-control" name="senha" id="exampleInputPassword1" placeholder="Senha"/>
+                                                                <label for="senha">Senha</label>
+                                                                <input type="password" required data-minlength="6" data-error="Mínimo de 6 caracteres" class="form-control" name="senha" id="senha" placeholder="Senha"/>
                                                                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                                                                <div class="help-block">Minimum of 6 characters</div>
+                                                                <span class="glyphicon form-control-feedback"></span>
+                                                                <span class="help-block with-errors"></span>                                                               
                                                             </div>     
                                                             <div class="form-group has-feedback">
-                                                                <label for="exampleInputPassword1">Confirmar Senha</label>
-                                                                <input type="password" class="form-control" name="senha2"  data-match="#exampleInputPassword1" data-match-error="Pera viado, senhas estão diferentes :D" id="exampleInputPasswordConfirm" placeholder="Senha"/>
+                                                                <label for="senha2">Confirmar Senha</label>
+                                                                <input type="password" data-minlength="6" required class="form-control {$borderColor}" id="senha2" name="senha2"  data-match="#senha" data-match-error="Pera viado, senhas estão diferentes :D" placeholder="Senha"/>
                                                                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                                                                <div class="help-block with-errors"></div>
+                                                                <span class="glyphicon form-control-feedback"></span>
+                                                                <span class="help-block with-errors"></span>
                                                             </div>    
                                                         </div>
                                                     </div>
@@ -237,11 +240,11 @@
                                                 </div>
                                                 <!-- /.modal-content -->
                                             </div>
-                                            </form>
-                                            <!-- /.modal-dialog -->
-                                        </div>
-                                    
-                                    <!-- /.modal -->                                        
+                                    </form>
+                                    <!-- /.modal-dialog -->
+                                </div>
+
+                                <!-- /.modal -->                                        
                                 </div>
 
 

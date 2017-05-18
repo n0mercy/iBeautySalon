@@ -52,6 +52,8 @@
                                         <!-- AdminLTE for demo purposes -->
                                         <script src="../dist/js/demo.js"></script>
 
+                                        <script src="../bootstrap/js//validator.min.js"></script>
+
                                         <script>
                                             $(document).ready(function () {
                                                 $("#submit").click(function (event) {
@@ -78,7 +80,7 @@
 
                                             <div class="wrapper">
                                                 <!-- /.example-modal -->
-                                                <form action="../ControllerCliente" id="form-main" name="form1" method="POST" role="form">
+                                                <form action="../ControllerCliente" id="form-main" name="form1" method="POST" role="form" data-toggle="validator">
                                                     <input type="hidden" value="cadClienteFisica" name="save"/>
                                                     <div class="example-modal ">
                                                         <div class="modal">           
@@ -186,16 +188,22 @@
                                                                         <!-- /.box-body -->        
                                                                     </div>
                                                                     <div class="form-group">
-                                                                        <label for="exampleInputEmail1">Email</label>
-                                                                        <input type="email" name="email" class="form-control" id="exampleInputEmail1" placeholder="Email"/>
+                                                                        <label for="email">Email</label>
+                                                                        <input type="email" name="email" class="form-control" id="email" placeholder="Email"/>
                                                                     </div>
-                                                                    <div class="form-group">
-                                                                        <label for="exampleInputPassword1">Senha</label>
-                                                                        <input type="password" name="senha" class="form-control" id="exampleInputPassword1" placeholder="Senha"/>
+                                                                    <div class="form-group has-feedback">
+                                                                        <label for="senha">Senha</label>
+                                                                        <input type="password" data-minLength="6" id="senha" data-error="Mínimo de 6 caracteres" required name="senha" class="form-control" placeholder="Senha"/>
+                                                                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                                                        <span class="glyphicon form-control-feedback"></span>
+                                                                        <span class="help-block with-errors"></span>
                                                                     </div>     
-                                                                    <div class="form-group">
-                                                                        <label for="exampleInputPassword1">Confirmar Senha</label>
-                                                                        <input type="password" name="confirm_senha" class="form-control" id="exampleInputPassword1" placeholder="Senha"/>
+                                                                    <div class="form-group has-feedback">
+                                                                        <label for="confirm_senha">Confirmar Senha</label>
+                                                                        <input type="password" required data-match="#senha" id="confirm_senha" data-minLength="6" data-match-error="Pera viado, senhas estão diferentes :D" name="confirm_senha" class="form-control {$borderColor}" placeholder="Senha"/>
+                                                                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                                                        <span class="glyphicon form-control-feedback"></span>
+                                                                        <span class="help-block with-errors"></span>
                                                                     </div> 
                                                                     <div class="modal-footer">               
                                                                         <button type="submit" class="btn btn-block btn-default btn-flat btn btn-primary pull-left">Salvar Cliente</button>                               
