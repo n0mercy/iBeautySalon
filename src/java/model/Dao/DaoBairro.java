@@ -30,6 +30,33 @@ public class DaoBairro {
     BeanBairro bairro;
     List<BeanBairro> list;
 
+    public BeanBairro findByDescricao(String desc) throws SQLException {
+        try {
+            con = Conexao.getConnection();
+            String sql = "select * from bairro where bai_nome = ?";
+            pstm = con.prepareStatement(sql);
+            pstm.setString(1, desc);
+            rs = pstm.executeQuery();
+            bairro = createBairro(rs);
+            return bairro;
+        } catch (SQLException | HeadlessException erro) {
+            System.out.println("Bairro não encontrado" + erro.getMessage());
+            return null;
+        } finally {
+            if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
+            }
+        }
+    }
+    
     public BeanBairro findByCodigo(int codigo) throws SQLException {
         try {
             con = Conexao.getConnection();

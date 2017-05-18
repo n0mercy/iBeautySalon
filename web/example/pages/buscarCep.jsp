@@ -83,7 +83,7 @@
                                                                         + "cep on end_cep= cep_cep inner join "
                                                                         + "bairro on cep_bai_codigo=bai_codigo inner join "
                                                                         + "zona on bai_zona_cod=zona_cod "
-                                                                        + "where usu_status='Ativo' and cep.cep_cep = " + cep + "";
+                                                                        + "where usu_status='Ativo' and cep.cep_cep = '"+cep+"'";
                                                             } else {
                                                                 sql = "select * from empresa_usuario inner join "
                                                                         + "usuario on emp_usu_codigo = usu_codigo left join "
@@ -92,7 +92,7 @@
                                                                         + "endereco on usu_end_cep = end_codigo inner join "
                                                                         + "cep on end_cep= cep_cep inner join "
                                                                         + "bairro on cep_bai_codigo=bai_codigo inner join "
-                                                                        + "zona on bai_zona_cod=zona_cod  where usu_status='Ativo';";
+                                                                        + "zona on bai_zona_cod=zona_cod where usu_status='Ativo';";
                                                             }
                                                             pstm = con.prepareStatement(sql);
                                                             rs = pstm.executeQuery(sql);

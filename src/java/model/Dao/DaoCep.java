@@ -14,7 +14,6 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Bean.BeanCep;
-import model.Bean.BeanCep;
 import model.connection.Conexao;
 
 /**
@@ -28,14 +27,15 @@ public class DaoCep {
     ResultSet rs;
     BeanCep cep = new BeanCep();
     
-    public BeanCep findByCodigo(int codigo) throws SQLException{      
+    public BeanCep findByCodigo(String codigo) throws SQLException{      
          try{           
             con=Conexao.getConnection();          
             String sql="select * from cep where cep_cep = ?";            
             pstm = con.prepareStatement(sql);           
-            pstm.setInt(1, codigo);
+            pstm.setString(1, codigo);
             rs = pstm.executeQuery();
             cep = createBairro(rs);
+             System.out.println("CEP: "+cep.getCep_cep());
             return cep;                     
         }catch(SQLException | HeadlessException erro){
             System.out.println("Cep não encontrado" +erro.getMessage());            

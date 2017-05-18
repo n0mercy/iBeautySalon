@@ -10,8 +10,12 @@ package model.Bean;
  * @author VaiDiegoo
  */
 public class BeanZona {
-  private int zona_cod;
-  private String zona_nome;
+
+    private int zona_cod;
+    private String zona_nome;
+
+    public BeanZona() {
+    }
 
     public int getZona_cod() {
         return zona_cod;
@@ -28,5 +32,5 @@ public class BeanZona {
     public void setZona_nome(String zona_nome) {
         this.zona_nome = zona_nome;
     }
-  
+
 }

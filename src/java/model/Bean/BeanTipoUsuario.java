@@ -13,6 +13,11 @@ public class BeanTipoUsuario {
     private int tipo_codigo;
     private String tipo_desc;
 
+    public BeanTipoUsuario() {
+    }
+
+    
+    
     public int getTipo_codigo() {
         return tipo_codigo;
     }

@@ -31,7 +31,32 @@ public class DaoZona {
     BeanZona zona;
     List<BeanZona> list;
 
-    
+    public BeanZona findByDescricao(String desc) throws SQLException {
+        try {
+            con = Conexao.getConnection();
+            String sql = "select * from zona where zona_nome = ?";
+            pstm = con.prepareStatement(sql);
+            pstm.setString(1, desc);
+            rs = pstm.executeQuery();
+            zona = createZona(rs);
+            return zona;
+        } catch (SQLException | HeadlessException erro) {
+            System.out.println("Zona não cadastrada" + erro.getMessage());
+            return null;
+        } finally {
+            if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
+            }
+        }
+    }
 
     public BeanZona findByCodigo(int codigo) throws SQLException {
         try {

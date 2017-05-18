@@ -16,6 +16,11 @@ public class BeanEndereco {
     private String end_num;
     private BeanCep end_cep;
 
+    public BeanEndereco() {
+    }
+    
+    
+
     public int getEnd_codigo() {
         return end_codigo;
     }

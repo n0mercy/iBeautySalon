@@ -43,7 +43,7 @@ public class DaoTipoUsuario {
              rs.close();
              pstm.close();
          }       
-    }
+    }        
      
      private BeanTipoUsuario createZona(ResultSet r){
         try {

@@ -14,6 +14,11 @@ public class BeanFones {
     private BeanUsuario fon_usu_cod;
     private String fon_fones;
 
+    public BeanFones() {
+    }
+
+    
+    
     public BeanUsuario getFon_usu_cod() {
         return fon_usu_cod;
     }

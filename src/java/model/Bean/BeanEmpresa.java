@@ -16,6 +16,11 @@ public class BeanEmpresa {
     private String emp_insc_estadual;
     private BeanUsuario emp_usu_codigo;
 
+    public BeanEmpresa() {
+    }
+
+    
+    
     public String getEmp_cnpj() {
         return emp_cnpj;
     }

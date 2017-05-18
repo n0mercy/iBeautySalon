@@ -10,8 +10,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Bean.BeanCep;
 import model.Bean.BeanFones;
 import model.Bean.BeanUsuario;
 import model.connection.Conexao;
@@ -62,5 +64,41 @@ public class DaoFones {
             return null;
         }
      }
+     
+     public void save(BeanFones fone, boolean update) throws SQLException {
+        try {
+            if (!update) {
+                pstm = con.prepareStatement("insert into fones(fon_fones, fone_usu_codigo) values (?,?)", Statement.RETURN_GENERATED_KEYS);
+            } else {
+                pstm = con.prepareStatement("update fones set fon_fones = ?, fone_usu_codigo = ? where fone_usu_codigo = ?");
+            }
+            
+            pstm.setString(1, fone.getFon_fones());
+            pstm.setInt(2, fone.getFon_usu_cod().getUsu_codigo());
+            if (update)//update
+            {
+                pstm.setInt(3, fone.getFon_usu_cod().getUsu_codigo());
+            }
+
+            int count = pstm.executeUpdate();
+            
+            if (count == 0) {
+                throw new SQLException("Erro ao salvar telefone");
+            }
+            
+        } finally {
+            if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
+            }
+        }
+    }
     
 }

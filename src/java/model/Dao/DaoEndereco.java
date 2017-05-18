@@ -11,8 +11,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Bean.BeanCep;
 import model.Bean.BeanEndereco;
 import model.connection.Conexao;
 
@@ -71,7 +73,7 @@ public class DaoEndereco {
                 end.setEnd_compl(r.getString("end_compl")); 
                 end.setEnd_ref(r.getString("end_ref"));
                 end.setEnd_num(r.getString("end_num"));  
-                end.setEnd_cep(new DaoCep().findByCodigo(rs.getInt("end_cep"))); 
+                end.setEnd_cep(new DaoCep().findByCodigo(rs.getString("end_cep"))); 
             }
             return end;
         } catch (SQLException ex) {
@@ -79,4 +81,56 @@ public class DaoEndereco {
             return null;
         }
      }
+     
+     public void save(BeanEndereco end) throws SQLException {
+         con=Conexao.getConnection();
+        try {
+            if (end.getEnd_codigo() == 0) {
+                pstm = con.prepareStatement("insert into endereco(end_ref, end_num, end_cep) values (?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            } else {
+                pstm = con.prepareStatement("update endereco set end_ref = ?, end_num = ?, end_cep = ? where end_codigo = ?");
+            }
+            
+            pstm.setString(1, end.getEnd_ref());
+            pstm.setString(2, end.getEnd_num());            
+            pstm.setString(3, end.getEnd_cep().getCep_cep());
+            if (end.getEnd_codigo() > 0)//update
+            {
+                pstm.setInt(4, end.getEnd_codigo());
+            }
+
+            int count = pstm.executeUpdate();
+            
+            if (count == 0) {
+                throw new SQLException("Erro ao salvar enredeço");
+            }
+            
+            if(end.getEnd_codigo() == 0){
+                end.setEnd_codigo(getGeneratedId(pstm));
+            }
+            
+        } finally {
+            if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
+            }
+        }
+    }
+     
+     public static int getGeneratedId(Statement stmt) throws SQLException {
+        ResultSet rs = stmt.getGeneratedKeys();
+        if (rs.next()) {
+            int id = rs.getInt(1);
+            return id;
+        }
+        return 0;
+    }
+     
 }

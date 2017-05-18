@@ -68,9 +68,9 @@
                             <!-- ./wrapper -->
                             <!-- jQuery 2.2.3 -->
 
-                            <script src="http://code.jquery.com/jquery-latest.js"></script>
+                            <!-- <script src="http://code.jquery.com/jquery-latest.js"></script> -->
 
-                            <!-- <script type="text/javascript" src="../plugins/jQuery/jquery-2.2.3.min.js"></script> -->
+                            <script type="text/javascript" src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
                             <!-- Bootstrap 3.3.6 -->
                             <script src="../bootstrap/js/bootstrap.min.js"></script>
                             <!-- FastClick -->
@@ -122,14 +122,14 @@
                                                             </div>
                                                             <label>Cnpj</label>
                                                             <div class="input-group">
-                                                                <div class="input-group-addon">
+                                                                <div class="input-group-addon">                                                                    
                                                                     <i class="fa fa-university"></i>
                                                                 </div>
                                                                 <input type="text" placeholder="Cnpj" name="cnpj" class="form-control"  data-inputmask="'insc estadual'" data-mask/>
                                                             </div>                                                
                                                             <label>Inscrição Estadual</label>
                                                             <div class="input-group">
-                                                                <div class="input-group-addon">
+                                                                <div class="input-group-addon">                                                                    
                                                                     <i class="fa fa-building-o"></i>
                                                                 </div>
                                                                 <input type="text" name="inscestadual" placeholder="Inscrição Estadual" class="form-control"  data-inputmask="'insc estadual'" data-mask/>
@@ -149,7 +149,7 @@
                                                             <div class="form-group">                
                                                                 <label>Cep</label>
                                                                 <div class="input-group">
-                                                                    <input type="text" placeholder="Cep" class="form-control" id="cep" data-inputmask='"mask": "99999-999"' data-mask/><span class="input-group-btn"/>
+                                                                    <input type="text" placeholder="Cep" class="form-control" id="cep" name="cep" data-inputmask='"mask": "99999-999"' data-mask/><span class="input-group-btn"/>
                                                                     <input type="button" id="submit" class="btn btn-info btn-flat" value="Buscar"/>
 
                                                                 </div>                                                  
@@ -164,87 +164,11 @@
                                                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>            
                                                                     </div>
                                                                 </div>
-                                                                <div class="form-group">
-                                                                    <label>Fones</label>
-
-                                                                    <div class="input-group">
-                                                                        <div class="input-group-addon">
-                                                                            <i class="fa fa-phone"></i>
-                                                                        </div>
-                                                                        <input type="text" name="telefone1" placeholder="Phone 1" class="form-control" value="<%= fone.getFon_fones() != null ? fone.getFon_fones() : ""%>"  data-inputmask='"mask": "(92) 99999-9999"' data-mask/>
-
-                                                                        <input type="text" name="telefone2" placeholder="Phone 2" class="form-control" data-inputmask='"mask": "(92) 99999-9999"' data-mask/>
-                                                                    </div>                                                           
-                                                                </div>
-                                                                <div class="form-group">                
-                                                                    <label>Cep</label>
-                                                                    <div class="input-group">
-                                                                        <form method="GET" action="cadClienteJuridica.jsp">
-                                                                            <input type="text" placeholder="Cep" class="form-control" name="cep" value="<%= cep.getCep_cep() != null ? cep.getCep_cep() : ""%>" data-inputmask='"mask": "99999-999"' data-mask/><span class="input-group-btn">
-                                                                                <button type="submit" class="btn btn-info btn-flat">Buscar</button>
-                                                                            </span> 
-                                                                        </form>
-                                                                    </div>                                                  
-                                                                </div>
-                                                                <!-- SELECT2 EXAMPLE -->
-                                                                <div class="box box-default">
-                                                                    <div class="box-header with-border">
-                                                                        <h3 class="box-title">Endereço</h3>
-
-                                                                        <div class="box-tools pull-right">
-                                                                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>            
-                                                                        </div>
-                                                                    </div>
-                                                                    <!-- /.box-header -->
-                                                                    <div class="box-body">
-                                                                        <div class="row">
-                                                                            <div class="col-md-6">              
-                                                                                <!-- /.form-group -->
-                                                                                <div class="form-group">
-                                                                                    <label>Referência</label>
-                                                                                    <input type="text" name="ref" value="<%= end.getEnd_ref() != null ? end.getEnd_ref() : ""%>" class="form-control" placeholder="Ponto de Referência"/>
-                                                                                </div>
-
-                                                                                <div class="form-group">
-                                                                                    <label>Número</label>
-                                                                                    <input type="text" name="numero" class="form-control" value="<%= end.getEnd_num() != null ? end.getEnd_num() : ""%>" placeholder="N°"/>
-                                                                                </div>
-                                                                                <!-- /.form-group -->
-                                                                            </div>
-                                                                            <!-- /.col -->
-                                                                            <div class="col-md-6">
-                                                                                <div class="form-group">
-                                                                                    <label>Bairro</label>
-                                                                                    <select name="bairro" class="form-control select2" style="width: 100%;">
-                                                                                        <%
-                                                                                            List<BeanBairro> bairros = new ArrayList<BeanBairro>();
-                                                                                            bairros = new DaoBairro().findAll();
-                                                                                            for (BeanBairro b : bairros) {
-                                                                                        %>
-                                                                                        <option value="<%= b.getBai_codigo()%>" selected="selected"><%= b.getBai_nome()%></option>               
-                                                                                        <%
-                                                                                            }
-                                                                                        %>
-                                                                                    </select>
-                                                                                </div>
-
-                                                                                <div class="form-group">
-                                                                                    <label>Zona</label>
-                                                                                    <select name="zona" class="form-control select2" style="width: 100%;">
-                                                                                        <%
-                                                                                            List<BeanZona> zonas = new ArrayList<BeanZona>();
-                                                                                            zonas = new DaoZona().findAll();
-                                                                                            for (BeanZona z : zonas) {
-                                                                                        %>
-                                                                                        <option value="<%= z.getZona_cod()%>" selected="selected"><%= z.getZona_nome()%></option>               
-                                                                                        <%
-                                                                                            }
-                                                                                        %>
-                                                                                    </select>
-                                                                                </div>            
-                                                                                <!-- /.form-group -->
-
-                                                                            </div>
+                                                                <!-- /.box-header -->
+                                                                <div class="box-body">
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">              
+                                                                            <!-- /.form-group -->
                                                                             <div class="form-group">
                                                                                 <label>Referência</label>
                                                                                 <input type="text" name="ref" id="ref" class="form-control" placeholder="Ponto de Referência"/>
@@ -277,7 +201,7 @@
                                                                         <div class="form-group">
                                                                             <div class="form-group">
                                                                                 <label>Rua</label>
-                                                                                <input type="text" id="tf_rua" name="rua" class="form-control" placeholder="Rua">
+                                                                                <input type="text" id="tf_rua" name="rua" disabled="true" class="form-control" placeholder="Rua"/>
                                                                             </div>
 
                                                                         </div>
@@ -290,16 +214,18 @@
                                                             <div class="form-group has-feedback">
                                                                 <label for="exampleInputEmail1">Email</label>
                                                                 <input type="email" class="form-control" name="email" id="exampleInputEmail1" placeholder="Email"/>                                                                    
-
+                                                                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                                                             </div>
                                                             <div class="form-group has-feedback">
                                                                 <label for="exampleInputPassword1">Senha</label>
                                                                 <input type="password" data-minlength="6" class="form-control" name="senha" id="exampleInputPassword1" placeholder="Senha"/>
+                                                                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                                                                 <div class="help-block">Minimum of 6 characters</div>
                                                             </div>     
                                                             <div class="form-group has-feedback">
                                                                 <label for="exampleInputPassword1">Confirmar Senha</label>
                                                                 <input type="password" class="form-control" name="senha2"  data-match="#exampleInputPassword1" data-match-error="Pera viado, senhas estão diferentes :D" id="exampleInputPasswordConfirm" placeholder="Senha"/>
+                                                                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                                                                 <div class="help-block with-errors"></div>
                                                             </div>    
                                                         </div>
@@ -311,9 +237,10 @@
                                                 </div>
                                                 <!-- /.modal-content -->
                                             </div>
+                                            </form>
                                             <!-- /.modal-dialog -->
                                         </div>
-                                    </form>
+                                    
                                     <!-- /.modal -->                                        
                                 </div>
 

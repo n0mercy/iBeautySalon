@@ -15,6 +15,11 @@ public class BeanBairro {
     private String bai_nome;
     private BeanZona bai_zona_cod;
 
+    public BeanBairro() {
+    }
+    
+    
+
     public int getBai_codigo() {
         return bai_codigo;
     }

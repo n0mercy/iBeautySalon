@@ -18,6 +18,11 @@ public class BeanUsuario {
     private BeanEndereco usu_end_cep;
     private BeanTipoUsuario usu_tipo_codigo;
 
+    public BeanUsuario() {
+    }
+    
+    
+
     public int getUsu_codigo() {
         return usu_codigo;
     }

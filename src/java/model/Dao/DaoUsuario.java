@@ -10,8 +10,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Bean.BeanCep;
 import model.Bean.BeanUsuario;
 import model.connection.Conexao;
 
@@ -82,5 +84,58 @@ public class DaoUsuario {
             return null;
         }
      }
+     
+     public void save(BeanUsuario usu) throws SQLException {
+         con = Conexao.getConnection();
+        try {
+            if (usu == null || usu.getUsu_codigo() == 0) {
+                pstm = con.prepareStatement("insert into usuario(usu_status, usu_senha, usu_email,usu_end_cep,usu_tipo_codigo) values (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            } else {
+                pstm = con.prepareStatement("update usuario set usu_status = ?, usu_senha = ?, usu_email = ?, usu_end_cep = ?, usu_tipo_codigo = ? where usu_codigo = ?");
+            }
+            
+            pstm.setString(1, usu.getUsu_status());
+            pstm.setString(2, usu.getUsu_senha());
+            pstm.setString(3, usu.getUsu_email());
+            pstm.setInt(4, usu.getUsu_end_cep().getEnd_codigo());
+            pstm.setInt(5, usu.getUsu_tipo_codigo().getTipo_codigo());
+            if (usu.getUsu_codigo() > 0)//update
+            {
+                pstm.setInt(6, usu.getUsu_codigo());
+            }
+
+            int count = pstm.executeUpdate();
+            
+            if (count == 0) {
+                throw new SQLException("Erro ao salvar usuário");
+            }
+            
+            if(usu.getUsu_codigo() == 0){
+                usu.setUsu_codigo(getGeneratedId(pstm));
+            }
+            
+        } finally {
+            if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
+            }
+        }
+    }
+     
+     public static int getGeneratedId(Statement stmt) throws SQLException {
+        ResultSet rs = stmt.getGeneratedKeys();
+        if (rs.next()) {
+            int id = rs.getInt(1);
+            return id;
+        }
+        return 0;
+    }
     
 }
