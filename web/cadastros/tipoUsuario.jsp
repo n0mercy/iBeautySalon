@@ -48,7 +48,6 @@
 
                                                         </div>
                                                     </div>
-
                                                     <button type="button"class="btn btn-block btn-default btn-flat" onClick="check_sex();">Avançar</button>   
                                                     <!-- /.col -->
                                                 </div>         
