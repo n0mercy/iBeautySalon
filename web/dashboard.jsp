@@ -71,20 +71,21 @@
                                                                                             <i class="fa fa-angle-left pull-right"></i>            </span>          </a>
                                                                                     <ul class="treeview-menu">
                                                                                         <%
-                                                                                                 Integer role = (Integer)request.getSession().getAttribute("role");
-                                                                                               if(role == 2 || role ==1){  
+                                                                                            Integer role = (Integer) request.getSession().getAttribute("role");
+                                                                                            if (role == 2 || role == 1) {
                                                                                         %>
                                                                                         <li><a href="example/pages/buscarCep.jsp" target="mainFrame"><i class="fa fa-circle-o"></i> Buscar Salões</a></li>
-                                                                                            <% 
-                                                                                              }                                             
-                                                                                              if(role == 3){  
+                                                                                            <%
+                                                                                                }
+                                                                                                if (role == 3) {
                                                                                             %>
-                                                                                        <li ><a href="cadastros/cadClienteJuridica.jsp" target="mainFrame"><i class="fa fa-circle-o"></i> Alterar Salão</a></li>
-                                                                                            <% 
-                                                                                              }
+                                                                                        <li ><a href="cadastros/edtClienteJuridica.jsp" target="mainFrame"><i class="fa fa-circle-o"></i> Alterar Salão</a></li>
+                                                                                            <%
+                                                                                                }
                                                                                             %> 
                                                                                     </ul>          
                                                                                 </li> 
+                                                                                <% if (role != 2) { %>
                                                                                 <li class="treeview">
                                                                                     <a href="#">
                                                                                         <i class="fa fa-files-o"></i>
@@ -93,21 +94,23 @@
                                                                                             <i class="fa fa-angle-left pull-right"></i>            </span>
                                                                                     </a>
                                                                                     <ul class="treeview-menu">
-                                                                                        <%            
-                                                                                            if(role == 3){  
+                                                                                        <%
+                                                                                            if (role == 3) {
                                                                                         %>
                                                                                         <li><a href="#" ><i class="fa fa-circle-o"></i> Adicionar Serviço</a></li>  
-                                                                                            <%         
+                                                                                            <%
                                                                                                 }
-                                                                                                if(role == 1){  
+                                                                                                if (role == 1) {
                                                                                             %>
                                                                                         <li><a href="example/forms/buscarServico.jsp" target="mainFrame" ><i class="fa fa-circle-o"></i> Buscar Serviços</a></li> 
                                                                                         <li><a href="example/forms/cadServico.jsp" target="mainFrame" ><i class="fa fa-circle-o"></i> Cadastrar Serviço</a></li>  
-                                                                                            <% 
+                                                                                            <%
                                                                                                 }
                                                                                             %>
                                                                                     </ul>
                                                                                 </li> 
+
+                                                                                <% } %>
                                                                                 <li class="treeview">
                                                                                     <a href="#">
                                                                                         <i class=" fa-sticky-note-o"></i>
@@ -116,13 +119,13 @@
                                                                                             <i class="fa fa-angle-left pull-right"></i>            </span>
                                                                                     </a>
                                                                                     <ul class="treeview-menu">
-                                                                                        <%            
-                                                                                          if(role == 3){  
+                                                                                        <%
+                                                                                            if (role == 3) {
                                                                                         %>
                                                                                         <li><a href="#" ><i class="fa fa-circle-o"></i> Consultar Vendidos</a></li>                       
                                                                                             <%
                                                                                                 }
-                                                                                                if(role==2){
+                                                                                                if (role == 2) {
                                                                                             %>
                                                                                         <li><a href="#" ><i class="fa fa-circle-o"></i> Consultar Comprados</a></li>       
                                                                                             <%
@@ -130,6 +133,7 @@
                                                                                             %>
                                                                                     </ul>
                                                                                 </li>  
+                                                                                <% if (role != 2) { %>
                                                                                 <li class="treeview">
                                                                                     <a href="#">
                                                                                         <i class="fa fa-pie-chart"></i>
@@ -139,21 +143,24 @@
                                                                                         </span>
                                                                                     </a>
                                                                                     <ul class="treeview-menu">
-                                                                                        <%                                                                                                
-                                                                                                if(role==1){
+                                                                                        <%
+                                                                                            if (role == 1) {
                                                                                         %>
                                                                                         <li><a href="#" ><i class="fa fa-circle-o"></i> Mensalidades</a></li>
                                                                                             <%
                                                                                                 }
-                                                                                                if (role==3){
+                                                                                                if (role == 3) {
                                                                                             %>
                                                                                         <li><a href="#" ><i class="fa fa-circle-o"></i> Serviços Mais Venidos</a></li>
                                                                                         <li><a href="example/pages/relatorioCupons.jsp" target="mainFrame" ><i class="fa fa-circle-o"></i> Cupons</a></li>            
-                                                                                            <%                                                                                            
-                                                                                            }
+                                                                                            <%
+                                                                                                }
                                                                                             %>                                                                                        
                                                                                     </ul>
                                                                                 </li> 
+                                                                                <% }
+
+                                                                                    if (role != 2) {%>
                                                                                 <li class="treeview">
                                                                                     <a href="#">
                                                                                         <i class="fa fa-credit-card"></i>
@@ -161,8 +168,8 @@
                                                                                         <span class="pull-right-container">
                                                                                             <i class="fa fa-angle-left pull-right"></i>            </span>          </a>
                                                                                     <ul class="treeview-menu">
-                                                                                        <%                                                                                                
-                                                                                                if(role==3){
+                                                                                        <%
+                                                                                            if (role == 3) {
                                                                                         %>
                                                                                         <li><a href="#" ><i class="fa fa-circle-o"></i> Pagar Mensalidade</a></li>                           
                                                                                             <%
@@ -170,6 +177,9 @@
                                                                                             %>
                                                                                     </ul>          
                                                                                 </li>
+                                                                                <% }
+                                                                                    if (role != 2) {
+                                                                                %>
                                                                                 <li class="treeview">
                                                                                     <a href="#">
                                                                                         <i class="fa fa-user-plus"></i>
@@ -177,8 +187,8 @@
                                                                                         <span class="pull-right-container">
                                                                                             <i class="fa fa-angle-left pull-right"></i>            </span>          </a>
                                                                                     <ul class="treeview-menu">
-                                                                                        <%                                                                                                
-                                                                                                if(role==3){
+                                                                                        <%
+                                                                                            if (role == 3) {
                                                                                         %>
                                                                                         <li><a href="#" ><i class="fa fa-circle-o"></i> Adicionar Funcionário</a></li>                           
                                                                                         <li><a href="#" ><i class="fa fa-circle-o"></i> Buscar Funcionário</a></li>                           
@@ -186,7 +196,8 @@
                                                                                                 }
                                                                                             %>
                                                                                     </ul>          
-                                                                                </li>                                                                               
+                                                                                </li>  
+                                                                                <% } %>
                                                                                 <li class="treeview">                                                                                    
                                                                                     <a href="#">                                                                                        
                                                                                         <i class="fa fa-user"></i>
@@ -194,14 +205,15 @@
                                                                                         <span class="pull-right-container">
                                                                                             <i class="fa fa-angle-left pull-right"></i>            </span>          </a>
                                                                                     <ul class="treeview-menu">
-                                                                                        <%                                                                                                
-                                                                                                if(role==2){
+                                                                                        <%
+                                                                                            if (role == 2) {
                                                                                         %>
                                                                                         <li><a href="cadastros/cadClienteFisica.jsp" target="mainFrame" ><i class="fa fa-circle-o"></i> Alterar Cliente</a></li>                           
                                                                                             <%
                                                                                                 }
                                                                                             %>
-                                                                                    </ul>          
+                                                                                    </ul>  
+                                                                                    <% if (role != 2) { %>
                                                                                 </li>
                                                                                 <li class="treeview">
                                                                                     <a href="#">
@@ -210,8 +222,8 @@
                                                                                         <span class="pull-right-container">
                                                                                             <i class="fa fa-angle-left pull-right"></i>            </span>          </a>
                                                                                     <ul class="treeview-menu">
-                                                                                        <%                                                                                                
-                                                                                                if(role==1){
+                                                                                        <%
+                                                                                            if (role == 1) {
                                                                                         %>
                                                                                         <li><a href="cadastros/tipoUsuario.jsp" target="mainFrame" ><i class="fa fa-circle-o"></i> Consultar Usuários</a></li>                           
                                                                                             <%
@@ -219,7 +231,7 @@
                                                                                             %>
                                                                                     </ul>            
                                                                                 </li>
-
+                                                                                <% }%>
                                                                                 <li class="treeview">
                                                                                     <li class="header">Sobre Nós</li>
                                                                                     <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>IBeautySalon</span></a></li>  

@@ -64,6 +64,39 @@
                                         background: transparent !important;
                                     }
                                 </style>
+                                <!-- jQuery 2.2.3 -->
+                                <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
+                                <!-- Bootstrap 3.3.6 -->
+                                <script src="../bootstrap/js/bootstrap.min.js"></script>
+                                <!-- FastClick -->
+                                <script src="../plugins/fastclick/fastclick.js"></script>
+                                <!-- AdminLTE App -->
+                                <script src="../dist/js/app.min.js"></script>
+                                <!-- AdminLTE for demo purposes -->
+                                <script src="../dist/js/demo.js"></script>
+                                <!-- Validator -->
+                                <script src="../bootstrap/js//validator.min.js"></script>
+
+                                <script>
+                                    $(document).ready(function () {
+                                        $("#submit").click(function (event) {
+                                            var cep_number = $("#cep").val();
+                                            var rua, bairro, zona, rest;
+                                            $.get("../ControllerCliente", {cep: cep_number}, function (responseText) {
+                                                rua = responseText.substr(0, responseText.indexOf(","));
+                                                zona = responseText.substr(responseText.indexOf(":") + 1, responseText.length);
+                                                rest = responseText.substr(responseText.indexOf(",") + 1);
+                                                bairro = rest.substr(0, rest.indexOf(":"));
+
+
+                                                document.getElementById("rua").value = rua;
+                                                document.getElementById("zona").value = zona;
+                                                document.getElementById("bairro").value = bairro;
+
+                                            });
+                                        });
+                                    });
+                                </script>
                                 </head>
 
                                 <body  >
@@ -71,25 +104,18 @@
                                         BeanEmpresa emp = new BeanEmpresa();
                                         BeanUsuario user = new BeanUsuario();
                                         BeanEndereco end = new BeanEndereco();
-                                        BeanEndereco end2 = null;
                                         BeanCep cep = new BeanCep();
-                                        BeanCep cep2 = null;
                                         BeanFones fone = new BeanFones();
-                                        BeanZona zona = new BeanZona();
                                         Connection con = Conexao.getConnection();
                                         String usuario = null;
                                         ResultSet rs;
                                         String sql = null;
                                         PreparedStatement pstm;
-                                        boolean cepOk = false;
                                         if (request.getSession().getAttribute("user") != null) {
                                             System.out.println("Usuário na session = true");
                                             usuario = request.getSession().getAttribute("user").toString();
                                         } else {
                                             System.out.println("Usuário na session = false");
-                                            end2 = new BeanEndereco();
-                                            end2.setEnd_ref("");
-                                            end2.setEnd_num("");
                                         }
                                         if (usuario != null) {
                                             sql = "select * from empresa_usuario inner join "
@@ -117,18 +143,11 @@
                                                     fone = new DaoFones().findByUser(rs.getInt("usu_codigo"));
 
                                                     if (request.getParameter("cep") != null) {
-                                                        cep = new DaoCep().findByCodigo(Integer.parseInt(request.getParameter("cep")));
+                                                        cep = new DaoCep().findByCodigo(request.getParameter("cep"));
                                                         end = new DaoEndereco().findByCep(cep.getCep_cep());
-                                                        zona = new DaoZona().findByCodigo(rs.getInt("bai_zona_cod"));
                                                         System.out.println(request.getParameter("cep") + ": 1");
-                                                        cepOk = true;
-                                                        cep2 = new BeanCep();
-                                                        end2 = new BeanEndereco();
-                                                        end2.setEnd_ref("");
-                                                        end2.setEnd_num("");
-                                                        cep2.setCep_cep("");
                                                     } else {
-                                                        cep = new DaoCep().findByCodigo(rs.getInt("end_cep"));
+                                                        cep = new DaoCep().findByCodigo(rs.getString("end_cep"));
                                                         end = new DaoEndereco().findByCep(rs.getString("end_cep"));
                                                         System.out.println(request.getParameter("cep") + ": 2");
                                                     }
@@ -139,22 +158,18 @@
 
                                         } else {
                                             if (request.getParameter("cep") != null) {
-                                                cep = new DaoCep().findByCodigo(Integer.parseInt(request.getParameter("cep")));
+                                                cep = new DaoCep().findByCodigo(request.getParameter("cep"));
                                                 end = new DaoEndereco().findByCep(cep.getCep_cep());
-                                                zona = new DaoZona().findByCodigo(cep.getCep_bai_codigo().getBai_zona_cod().getZona_cod());
                                                 System.out.println(request.getParameter("cep") + ": cep encontrado");
-                                                cepOk = true;
-                                                cep2 = new BeanCep();
-                                                cep2.setCep_cep("");
-                                                end2 = new BeanEndereco();
-                                                end2.setEnd_ref("");
-                                                end2.setEnd_num("");
                                             }
                                         }
                                     %>
                                     <div class="wrapper">
                                         <!-- /.example-modal -->
-                                        <form data-toggle="validator" action="../ControllerCliente" id="form-main" name="form1" method="POST" role="form">
+                                        <form action="../ControllerCliente" id="form-main" name="form1" method="POST" data-toggle="validator" role="form">
+                                            <input type="hidden" value="" name=""/>
+                                            <input type="hidden" value="" name=""/>
+                                            <input type="hidden" value="" name=""/>
                                             <div class="example-modal ">
                                                 <div class="modal">           
                                                     <div class="modal-dialog">
@@ -167,21 +182,21 @@
                                                             <div class="modal-body">
                                                                 <div class="form-group">
                                                                     <label>Razão Social</label>
-                                                                    <input type="text" name="razao" value="<%= emp.getEmp_razao() != null ? emp.getEmp_razao() : ""%>"  class="form-control" placeholder="Razão"/>
+                                                                    <input type="text" name="razao" value="<%= emp.getEmp_razao()%>"  class="form-control" placeholder="Razão"/>
                                                                 </div>
                                                                 <label>Cnpj</label>
                                                                 <div class="input-group">
                                                                     <div class="input-group-addon">
                                                                         <i class="fa fa-university"></i>
                                                                     </div>
-                                                                    <input type="text" placeholder="Cnpj" name="cnpj" value="<%= emp.getEmp_razao() != null ? emp.getEmp_razao() : ""%>" class="form-control"  data-inputmask="'insc estadual'" data-mask/>
+                                                                    <input type="text" placeholder="Cnpj" name="cnpj" value="<%= emp.getEmp_cnpj()%>" class="form-control"  data-inputmask="'insc estadual'" data-mask/>
                                                                 </div>                                                
                                                                 <label>Inscrição Estadual</label>
                                                                 <div class="input-group">
                                                                     <div class="input-group-addon">
                                                                         <i class="fa fa-building-o"></i>
                                                                     </div>
-                                                                    <input type="text" name="inscestadual" value="<%=emp.getEmp_insc_estadual() != null ? emp.getEmp_insc_estadual() : ""%>" placeholder="Inscrição Estadual" class="form-control"  data-inputmask="'insc estadual'" data-mask>
+                                                                    <input type="text" name="inscestadual" value="<%= emp.getEmp_insc_estadual()%>" placeholder="Inscrição Estadual" class="form-control"  data-inputmask="'insc estadual'" data-mask>
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label>Fones</label>
@@ -198,11 +213,9 @@
                                                                 <div class="form-group">                
                                                                     <label>Cep</label>
                                                                     <div class="input-group">
-                                                                        <form name="form2" method="POST" id="form-two" action="cadClienteJuridica.jsp">
-                                                                            <input type="text" placeholder="Cep" class="form-control" name="cep" value="<%= cep.getCep_cep() != null ? cep.getCep_cep() : ""%>" data-inputmask='"mask": "99999-999"' data-mask/>                    <span class="input-group-btn">
-                                                                                <button type="submit" class="btn btn-info btn-flat" onClick="document.form2.submit();">Buscar</button>
-                                                                            </span> 
-                                                                        </form>
+                                                                        <input type="text" placeholder="Cep" value="<%= cep.getCep_cep()%>" class="form-control" id="cep" name="cep" data-inputmask='"mask": "99999-999"' data-mask/><span class="input-group-btn"/>
+                                                                        <input type="button" id="submit" class="btn btn-info btn-flat" value="Buscar"/>
+
                                                                     </div>                                                  
                                                                 </div>
                                                                 <!-- SELECT2 EXAMPLE -->
@@ -221,12 +234,12 @@
                                                                                 <!-- /.form-group -->
                                                                                 <div class="form-group">
                                                                                     <label>Referência</label>
-                                                                                    <input type="text" name="ref" value="<%= end2 != null ? "" : end.getEnd_ref()%>" class="form-control" placeholder="Ponto de Referência"/>
+                                                                                    <input type="text" name="ref" id="ref" value="<%= end.getEnd_ref()%>" class="form-control" placeholder="Ponto de Referência"/>
                                                                                 </div>
 
                                                                                 <div class="form-group">
                                                                                     <label>Número</label>
-                                                                                    <input type="text" name="numero" class="form-control" value="<%= end2 != null ? "" : end.getEnd_num()%>" placeholder="N°"/>
+                                                                                    <input type="text" name="numero" id="numero" class="form-control" value="<%= end.getEnd_num()%>" placeholder="N°"/>
                                                                                 </div>
                                                                                 <!-- /.form-group -->
                                                                             </div>
@@ -234,38 +247,12 @@
                                                                             <div class="col-md-6">
                                                                                 <div class="form-group">
                                                                                     <label>Bairro</label>
-                                                                                    <select name="bairro" disabled="true" class="form-control select2" style="width: 100%;">
-                                                                                        <%
-                                                                                            List<BeanBairro> bairros = new ArrayList<BeanBairro>();
-                                                                                            if (cepOk) {
-                                                                                                bairros = new DaoBairro().findByCep(cep);
-                                                                                            }
-
-                                                                                            for (BeanBairro b : bairros) {
-                                                                                        %>
-                                                                                        <option value="<%= b != null ? b.getBai_codigo() : ""%>" selected="selected"><%= b != null ? b.getBai_nome() : ""%></option>               
-                                                                                        <%
-                                                                                            }
-                                                                                        %>
-                                                                                    </select>
+                                                                                    <input type="text" disabled="true" id="bairro" name="bairro" value="<%= cep.getCep_bai_codigo().getBai_nome()%>" class="form-control"/>
                                                                                 </div>
 
                                                                                 <div class="form-group">
                                                                                     <label>Zona</label>
-                                                                                    <select name="zona" disabled="true" class="form-control select2" style="width: 100%;">
-                                                                                        <%
-                                                                                            List<BeanZona> zonas = new ArrayList<BeanZona>();
-                                                                                            if (cepOk) {
-                                                                                                zonas = new DaoZona().findByBairro(cep);
-                                                                                            }
-
-                                                                                            for (BeanZona z : zonas) {
-                                                                                        %>
-                                                                                        <option value="<%= z.getZona_cod()%>" selected="selected"><%= z.getZona_nome()%></option>               
-                                                                                        <%
-                                                                                            }
-                                                                                        %>
-                                                                                    </select>
+                                                                                    <input type="text" disabled="true" id="zona" name="zona" value="<%= cep.getCep_bai_codigo().getBai_zona_cod().getZona_nome()%>" class="form-control"/>
                                                                                 </div>            
                                                                                 <!-- /.form-group -->
 
@@ -273,7 +260,7 @@
                                                                             <div class="form-group">
                                                                                 <div class="form-group">
                                                                                     <label>Rua</label>
-                                                                                    <input type="text" name="rua" value="<%= cep2 != null ? cep.getRua() : ""%>" class="form-control" placeholder="Rua">
+                                                                                    <input type="text" disabled="true" id="rua" name="rua" value="<%= cep.getRua()%>" class="form-control" placeholder="Rua"/>
                                                                                 </div>
 
                                                                             </div>
@@ -285,23 +272,27 @@
                                                                 </div>
                                                                 <div class="form-group has-feedback">
                                                                     <label for="exampleInputEmail1">Email</label>
-                                                                    <input type="email" class="form-control" name="email" value="<%= user.getUsu_email() != null ? user.getUsu_email() : ""%>" id="exampleInputEmail1" placeholder="Email"/>                                                                    
+                                                                    <input type="email" required class="form-control" name="email" value="<%= user.getUsu_email() != null ? user.getUsu_email() : ""%>" id="email" id="email" placeholder="Email"/>                                                                    
 
                                                                 </div>
                                                                 <div class="form-group has-feedback">
-                                                                    <label for="exampleInputPassword1">Senha</label>
-                                                                    <input type="password" data-minlength="6" class="form-control" name="senha" value="<%= user.getUsu_senha() != null ? user.getUsu_senha() : ""%>" id="exampleInputPassword1" placeholder="Senha"/>
-                                                                    <div class="help-block">Minimum of 6 characters</div>
+                                                                    <label for="senha">Senha</label>
+                                                                    <input type="password" data-minlength="6" required class="form-control" name="senha" value="<%= user.getUsu_senha() != null ? user.getUsu_senha() : ""%>" id="senha" placeholder="Senha"/>
+                                                                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                                                    <span class="glyphicon form-control-feedback"></span>
+                                                                    <span class="help-block with-errors"></span>
                                                                 </div>     
                                                                 <div class="form-group has-feedback">
-                                                                    <label for="exampleInputPassword1">Confirmar Senha</label>
-                                                                    <input type="password" class="form-control" name="senha2"  data-match="#exampleInputPassword1" data-match-error="Pera viado, senhas estão diferentes :D" id="exampleInputPasswordConfirm" placeholder="Senha"/>
-                                                                    <div class="help-block with-errors"></div>
+                                                                    <label for="senha2">Confirmar Senha</label>
+                                                                    <input type="password" class="form-control" required name="senha2"  data-match="#senha" data-match-error="Pera viado, senhas estão diferentes :D" id="senha2" placeholder="Confirme sua senha"/>
+                                                                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                                                    <span class="glyphicon form-control-feedback"></span>
+                                                                    <span class="help-block with-errors"></span>
                                                                 </div>    
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">               
-                                                            <button type="button" onclick="finSaveFunc();" class="btn btn-block btn-default btn-flat btn btn-primary pull-left">Salvar Empresa</button>                               
+                                                            <button type="submit" class="btn btn-block btn-default btn-flat btn btn-primary pull-left">Salvar Empresa</button>                               
                                                         </div>
 
                                                     </div>
@@ -312,32 +303,6 @@
                                         </form>
                                         <!-- /.modal -->
                                     </div>
-                                    <!-- ./wrapper -->
-                                    <!-- jQuery 2.2.3 -->
-
-                                    <script type="text/javascript">
-
-                                        function finSaveFunc() {
-
-                                            var stName = document.getElementById("stName")
-                                            var Subject = document.getElementById("Subject")
-                                            var Grade = document.getElementById("Grade")
-
-                                            document.stName.submit();
-                                            document.Subject.submit();
-                                            document.Grade.submit();
-
-                                        }
-
-                                    </script>
-                                    <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
-                                    <!-- Bootstrap 3.3.6 -->
-                                    <script src="../bootstrap/js/bootstrap.min.js"></script>
-                                    <!-- FastClick -->
-                                    <script src="../plugins/fastclick/fastclick.js"></script>
-                                    <!-- AdminLTE App -->
-                                    <script src="../dist/js/app.min.js"></script>
-                                    <!-- AdminLTE for demo purposes -->
-                                    <script src="../dist/js/demo.js"></script>
+                                    <!-- ./wrapper -->                                   
                                 </body>
                                 </html>

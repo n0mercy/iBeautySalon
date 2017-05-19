@@ -51,12 +51,12 @@
                                         <script src="../dist/js/app.min.js"></script>
                                         <!-- AdminLTE for demo purposes -->
                                         <script src="../dist/js/demo.js"></script>
-
-                                        <script src="../bootstrap/js//validator.min.js"></script>
-
+                                        <script src="../bootstrap/js/validator.min.js"></script>                                        
+                                        
                                         <script>
                                             $(document).ready(function () {
                                                 $("#submit").click(function (event) {
+
                                                     var cep_number = $("#cep").val();
                                                     var rua, bairro, zona, rs;
                                                     $.get("../ControllerCliente", {cep: cep_number}, function (responseText) {
@@ -80,7 +80,7 @@
 
                                             <div class="wrapper">
                                                 <!-- /.example-modal -->
-                                                <form action="../ControllerCliente" id="form-main" name="form1" method="POST" role="form" data-toggle="validator">
+                                                <form action="../ControllerCliente" id="form-main" name="form" method="POST" role="form" data-toggle="validator">
                                                     <input type="hidden" value="cadClienteFisica" name="save"/>
                                                     <div class="example-modal ">
                                                         <div class="modal">           
@@ -124,7 +124,6 @@
                                                                         <div class="form-group">                
                                                                             <label>Cep</label>
                                                                             <div class="input-group">
-
                                                                                 <input type="text" class="form-control" id="cep" name="cep" data-inputmask='"mask": "(92) 99999-9999"' data-mask/>                    <span class="input-group-btn">
                                                                                     <input type="button" id="submit" class="btn btn-info btn-flat" value="Buscar"/>
                                                                                 </span>                                            
@@ -177,7 +176,7 @@
                                                                                 <div class="form-group">
                                                                                     <div class="form-group">
                                                                                         <label>Rua</label>
-                                                                                        <input type="text" name="rua" id="rua" class="form-control" disabled="disabled" placeholder="Rua">
+                                                                                        <input type="text" name="rua" id="rua" class="form-control" disabled="disabled" placeholder="Rua"/>
                                                                                     </div>
 
                                                                                 </div>
@@ -206,7 +205,7 @@
                                                                         <span class="help-block with-errors"></span>
                                                                     </div> 
                                                                     <div class="modal-footer">               
-                                                                        <button type="submit" class="btn btn-block btn-default btn-flat btn btn-primary pull-left">Salvar Cliente</button>                               
+                                                                        <button type="submit" id="btnSubmit" name="btnSubmit" class="btn btn-block btn-default btn-flat btn btn-primary pull-left" >Salvar Cliente</button>                               
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -214,8 +213,10 @@
 
                                                         </div>
                                                         <!-- /.modal-content -->
-                                                    </div>
+                                                    </div>                                                    
                                                 </form>
+                                                <!-- Modal Dialog -->
+                                                
                                                 <!-- /.modal-dialog -->
                                             </div>
                                             <!-- /.modal -->

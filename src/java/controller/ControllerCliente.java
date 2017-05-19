@@ -157,6 +157,7 @@ public class ControllerCliente extends HttpServlet {
                 tipoUser = new DaoTipoUsuario().findByCodigo(3);//tipo_user(3) = Juridico
                 user.setUsu_tipo_codigo(tipoUser);//set tipo_user to Usuario
                 cep = new DaoCep().findByCodigo(request.getParameter("cep"));//find obj cep
+                end.setEnd_cep(cep);//set cep to endereco
                 zona = new DaoZona().findByDescricao(request.getParameter("zona"));//find obj zona
                 bairro = new DaoBairro().findByDescricao(request.getParameter("bairro"));//find obj bairro
             } catch (SQLException ex) {
@@ -168,8 +169,7 @@ public class ControllerCliente extends HttpServlet {
                 //save Address
                 new DaoEndereco().save(end);//save endereco and return your PK
                 if (end.getEnd_codigo() > 0) {//if true, show message true on log
-                    System.out.println("Endereço save : true");
-                    end.setEnd_cep(cep);//set cep to endereco
+                    System.out.println("Endereço save : true");                    
                     user.setUsu_end_cep(end);//set endereco to Usuario
                 } else {
                     System.out.println("Endereço save : false");
@@ -185,6 +185,14 @@ public class ControllerCliente extends HttpServlet {
                     System.out.println("Usuario save : false");
                     System.out.println("Erro ao atribuir fone para cliente, ou cliente para empresa: " + emp.getEmp_razao());
                 }
+                
+                //save Phone
+                new DaoFones().save(fone, false);
+                if(fone.getFon_usu_cod().getUsu_codigo() > 0)
+                    System.out.println("Fone save : true");
+                else
+                    System.out.println("Fone save : false");
+                
                 //save Company
                 new DaoEmpresa().save(emp, false);//save Empresa
                 if (emp.getEmp_cnpj() != null) {//check cpnj != null and show messages
