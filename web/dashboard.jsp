@@ -84,8 +84,7 @@
                                                                                                 }
                                                                                             %> 
                                                                                     </ul>          
-                                                                                </li> 
-                                                                                <% if (role != 2) { %>
+                                                                                </li>
                                                                                 <li class="treeview">
                                                                                     <a href="#">
                                                                                         <i class="fa fa-files-o"></i>
@@ -109,8 +108,6 @@
                                                                                             %>
                                                                                     </ul>
                                                                                 </li> 
-
-                                                                                <% } %>
                                                                                 <li class="treeview">
                                                                                     <a href="#">
                                                                                         <i class=" fa-sticky-note-o"></i>
@@ -132,8 +129,7 @@
                                                                                                 }
                                                                                             %>
                                                                                     </ul>
-                                                                                </li>  
-                                                                                <% if (role != 2) { %>
+                                                                                </li>
                                                                                 <li class="treeview">
                                                                                     <a href="#">
                                                                                         <i class="fa fa-pie-chart"></i>
@@ -157,10 +153,7 @@
                                                                                                 }
                                                                                             %>                                                                                        
                                                                                     </ul>
-                                                                                </li> 
-                                                                                <% }
-
-                                                                                    if (role != 2) {%>
+                                                                                </li>
                                                                                 <li class="treeview">
                                                                                     <a href="#">
                                                                                         <i class="fa fa-credit-card"></i>
@@ -177,9 +170,6 @@
                                                                                             %>
                                                                                     </ul>          
                                                                                 </li>
-                                                                                <% }
-                                                                                    if (role != 2) {
-                                                                                %>
                                                                                 <li class="treeview">
                                                                                     <a href="#">
                                                                                         <i class="fa fa-user-plus"></i>
@@ -196,8 +186,7 @@
                                                                                                 }
                                                                                             %>
                                                                                     </ul>          
-                                                                                </li>  
-                                                                                <% } %>
+                                                                                </li>
                                                                                 <li class="treeview">                                                                                    
                                                                                     <a href="#">                                                                                        
                                                                                         <i class="fa fa-user"></i>
@@ -208,12 +197,11 @@
                                                                                         <%
                                                                                             if (role == 2) {
                                                                                         %>
-                                                                                        <li><a href="cadastros/cadClienteFisica.jsp" target="mainFrame" ><i class="fa fa-circle-o"></i> Alterar Cliente</a></li>                           
+                                                                                        <li><a href="cadastros/edtClienteFisica.jsp" target="mainFrame" ><i class="fa fa-circle-o"></i> Alterar Cliente</a></li>                           
                                                                                             <%
                                                                                                 }
                                                                                             %>
-                                                                                    </ul>  
-                                                                                    <% if (role != 2) { %>
+                                                                                    </ul>
                                                                                 </li>
                                                                                 <li class="treeview">
                                                                                     <a href="#">
@@ -225,13 +213,12 @@
                                                                                         <%
                                                                                             if (role == 1) {
                                                                                         %>
-                                                                                        <li><a href="cadastros/tipoUsuario.jsp" target="mainFrame" ><i class="fa fa-circle-o"></i> Consultar Usuários</a></li>                           
+                                                                                        <li><a href="example/pages/buscarTipoUsuario.jsp" target="mainFrame" ><i class="fa fa-circle-o"></i> Consultar Usuários</a></li>                           
                                                                                             <%
                                                                                                 }
                                                                                             %>
                                                                                     </ul>            
                                                                                 </li>
-                                                                                <% }%>
                                                                                 <li class="treeview">
                                                                                     <li class="header">Sobre Nós</li>
                                                                                     <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>IBeautySalon</span></a></li>  

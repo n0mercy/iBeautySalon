@@ -6,7 +6,9 @@
 package model.Dao;
 
 import java.sql.SQLException;
+import java.util.Date;
 import model.Bean.BeanCep;
+import model.Bean.BeanCliente;
 
 /**
  *
@@ -14,11 +16,11 @@ import model.Bean.BeanCep;
  */
 public class TesteMain {
     public static void main(String args[]) throws SQLException{
-        BeanCep b = new BeanCep();
-        b.setCep_cep("69030052");
-        b.setRua("Danilo de Matos Areosa 3");
-        b.setCep_bai_codigo(new DaoBairro().findByCodigo(8));
-        new DaoCep().save(b, false);
-        System.out.println(b.getCep_cep());
+        BeanCliente cliente = new BeanCliente();
+        cliente = new DaoCliente().findByCpf("003.539.242-88");
+        cliente.setCli_nome("Frank");
+        cliente.setCli_dtnasc(new Date());
+        cliente.setCli_usu_codigo(new DaoUsuario().findByCodigo(4));
+        new DaoCliente().save(cliente, true);
     }
 }

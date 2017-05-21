@@ -68,8 +68,10 @@ public class DaoFones {
      public void save(BeanFones fone, boolean update) throws SQLException {
         try {
             if (!update) {
+                System.out.println("INSERT FONE");
                 pstm = con.prepareStatement("insert into fones(fon_fones, fone_usu_codigo) values (?,?)", Statement.RETURN_GENERATED_KEYS);
             } else {
+                System.out.println("UPDATE FONE");
                 pstm = con.prepareStatement("update fones set fon_fones = ?, fone_usu_codigo = ? where fone_usu_codigo = ?");
             }
             

@@ -88,9 +88,11 @@ public class DaoUsuario {
      public void save(BeanUsuario usu) throws SQLException {
          con = Conexao.getConnection();
         try {
-            if (usu == null || usu.getUsu_codigo() == 0) {
+            if (usu.getUsu_codigo() == 0) {
+                System.out.println("INSERT Usuario");
                 pstm = con.prepareStatement("insert into usuario(usu_status, usu_senha, usu_email,usu_end_cep,usu_tipo_codigo) values (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             } else {
+                System.out.println("UPDATE Usuario");
                 pstm = con.prepareStatement("update usuario set usu_status = ?, usu_senha = ?, usu_email = ?, usu_end_cep = ?, usu_tipo_codigo = ? where usu_codigo = ?");
             }
             

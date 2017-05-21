@@ -86,8 +86,10 @@ public class DaoEndereco {
          con=Conexao.getConnection();
         try {
             if (end.getEnd_codigo() == 0) {
+                System.out.println("INSERT Endereco");
                 pstm = con.prepareStatement("insert into endereco(end_ref, end_num, end_cep) values (?,?,?)", Statement.RETURN_GENERATED_KEYS);
             } else {
+                System.out.println("UPDATE Endereco");
                 pstm = con.prepareStatement("update endereco set end_ref = ?, end_num = ?, end_cep = ? where end_codigo = ?");
             }
             

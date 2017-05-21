@@ -81,15 +81,15 @@ public class ControllerCliente extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         StringBuilder sb = new StringBuilder();
-        System.out.println("Ajax in action");
+        System.out.println("Calling Ajax");
         BeanCep cep = null;
         BeanZona zona = new BeanZona();
         BeanBairro bairro = new BeanBairro();
-
+        
         if (request.getParameter("cep") != null) {
             try {
                 System.out.println("findCep : true");
-
+                
                 cep = new DaoCep().findByCodigo(request.getParameter("cep"));
                 bairro = new DaoBairro().findByCodigo(cep.getCep_bai_codigo().getBai_codigo());
                 zona = new DaoZona().findByCodigo(bairro.getBai_zona_cod().getZona_cod());
@@ -102,12 +102,12 @@ public class ControllerCliente extends HttpServlet {
                 Logger.getLogger(ControllerCliente.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-
+            
         }
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(sb.toString());
-
+        
     }
 
     /**
@@ -123,7 +123,11 @@ public class ControllerCliente extends HttpServlet {
             throws ServletException, IOException {
 
         //param "save" describe the page origin (cadClienteJuridico.jsp) = Pessoa Jurídica
-        if (request.getParameter("save") != null && request.getParameter("save").equals("cadClienteJuridico")) {
+        String saveOrUpdate = null;
+        saveOrUpdate = request.getParameter("save");
+        System.out.println("REQUEST: " + saveOrUpdate);
+        
+        if (saveOrUpdate.equals("cadClienteJuridica") || saveOrUpdate.equals("edtClienteJuridica")) {
 
             //init Beans
             BeanCep cep = new BeanCep();
@@ -134,6 +138,24 @@ public class ControllerCliente extends HttpServlet {
             BeanFones fone = new BeanFones();
             BeanZona zona = new BeanZona();
             BeanBairro bairro = new BeanBairro();
+            
+            try {
+                //take PK's to update
+                if (request.getParameter("save").equals("edtClienteJuridica")) {
+                    if (request.getParameter("empresa_id") != null) {
+                        emp = new DaoEmpresa().findByCnpj(request.getParameter("empresa_id"));
+                        end = new DaoEndereco().findByCodigo(Integer.parseInt(request.getParameter("endereco_id")));
+                        user = new DaoUsuario().findByCodigo(Integer.parseInt(request.getParameter("usuario_id")));
+                        fone = new DaoFones().findByUser(Integer.parseInt(request.getParameter("usuario_id")));
+                        
+                    } else {
+                        System.out.println("EMPRESA NULL");
+                    }
+                }
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(ControllerCliente.class.getName()).log(Level.SEVERE, "Error Foreign try/catch", ex);
+            }
 
             //Company
             emp.setEmp_razao(request.getParameter("razao"));
@@ -166,10 +188,11 @@ public class ControllerCliente extends HttpServlet {
 
             //save methods
             try {
+
                 //save Address
                 new DaoEndereco().save(end);//save endereco and return your PK
                 if (end.getEnd_codigo() > 0) {//if true, show message true on log
-                    System.out.println("Endereço save : true");                    
+                    System.out.println("Endereço save : true");
                     user.setUsu_end_cep(end);//set endereco to Usuario
                 } else {
                     System.out.println("Endereço save : false");
@@ -185,28 +208,37 @@ public class ControllerCliente extends HttpServlet {
                     System.out.println("Usuario save : false");
                     System.out.println("Erro ao atribuir fone para cliente, ou cliente para empresa: " + emp.getEmp_razao());
                 }
-                
+
                 //save Phone
-                new DaoFones().save(fone, false);
-                if(fone.getFon_usu_cod().getUsu_codigo() > 0)
+                if (request.getParameter("fone_usuario") != null) {
+                    new DaoFones().save(fone, true);//update
+                } else {
+                    new DaoFones().save(fone, false);//save
+                }                
+                if (fone.getFon_usu_cod().getUsu_codigo() > 0) {
                     System.out.println("Fone save : true");
-                else
+                } else {
                     System.out.println("Fone save : false");
-                
+                }
+
                 //save Company
-                new DaoEmpresa().save(emp, false);//save Empresa
+                if (request.getParameter("empresa_id") != null) {
+                    new DaoEmpresa().save(emp, true);//update Empresa
+                } else {
+                    new DaoEmpresa().save(emp, false);//save Empresa
+                }                
                 if (emp.getEmp_cnpj() != null) {//check cpnj != null and show messages
                     System.out.println("Empresa save : true");
                 } else {
                     System.out.println("Empresa save : false");
                 }
-
+                
             } catch (SQLException ex) {
                 Logger.getLogger(ControllerCliente.class.getName()).log(Level.SEVERE, "Error nos métodos save()", ex);
             }
 
             //param "save" describe the page origin (cadClienteFisica.jsp) = Pessoa Física
-        } else if (request.getParameter("save") != null && request.getParameter("save").equals("cadClienteFisica")) {
+        } else if (saveOrUpdate.equals("cadClienteFisica") || saveOrUpdate.equals("edtClienteFisica")) {
 
             //init Beans
             BeanCep cep = new BeanCep();
@@ -217,12 +249,31 @@ public class ControllerCliente extends HttpServlet {
             BeanZona zona = new BeanZona();
             BeanBairro bairro = new BeanBairro();
             BeanCliente cliente = new BeanCliente();
+            
+            
+            try {
+                //take PK's to update
+                if (request.getParameter("save").equals("edtClienteFisica")) {
+                    if (request.getParameter("cliente_id") != null) {
+                        cliente = new DaoCliente().findByCpf(request.getParameter("cliente_id"));
+                        
+                        end = new DaoEndereco().findByCodigo(Integer.parseInt(request.getParameter("endereco_id")));
+                        user = new DaoUsuario().findByCodigo(Integer.parseInt(request.getParameter("usuario_id")));                        
+                        fone = new DaoFones().findByUser(Integer.parseInt(request.getParameter("usuario_id")));
+                        
+                    } else {
+                        System.out.println("CLIENTE NULL");
+                    }
+                }
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(ControllerCliente.class.getName()).log(Level.SEVERE, "Error Foreign try/catch", ex);
+            }
 
             //value confirm password [to do]
             String confirm = request.getParameter("confirm_senha");
 
             //client
-            cliente.setCli_cpf(request.getParameter("cpf"));
             cliente.setCli_nome(request.getParameter("nome"));
             cliente.setCli_dtnasc(new Date());
 
@@ -237,7 +288,6 @@ public class ControllerCliente extends HttpServlet {
 
             //phone
             fone.setFon_fones(request.getParameter("telefone1"));
-            System.out.println("Telefone: " + request.getParameter("telefone1"));
 
             //buscando cadastros auxiliares
             try {
@@ -245,6 +295,7 @@ public class ControllerCliente extends HttpServlet {
                 cep = new DaoCep().findByCodigo(request.getParameter("cep"));//find cep
                 end.setEnd_cep(cep);//set cep to endereco
                 user.setUsu_tipo_codigo(tipoUser);//set tipo_user to Usuario
+                cliente.setCli_usu_codigo(user);
             } catch (SQLException ex) {
                 Logger.getLogger(ControllerCliente.class.getName()).log(Level.SEVERE, "Erro ao buscar cadastros auxiliares", ex);
             }
@@ -270,27 +321,44 @@ public class ControllerCliente extends HttpServlet {
                     System.out.println("Save User : false");
                 }
 
-                //save phone
-                new DaoFones().save(fone, false);//save fone and return your PK
-                if (fone.getFon_fones() != null) {
-                    System.out.println("Save Phone : true");
+                //save Phone
+                if (request.getParameter("fone_usuario") != null) {
+                    new DaoFones().save(fone, true);//update
                 } else {
-                    System.out.println("Save Phone : true");
+                    new DaoFones().save(fone, false);//save
+                }                
+                if (fone.getFon_usu_cod().getUsu_codigo() > 0) {
+                    System.out.println("Fone save : true");
+                } else {
+                    System.out.println("Fone save : false");
                 }
 
-                //save Client
-                new DaoCliente().save(cliente, false);
-                if(cliente.getCli_cpf() != null)
-                    System.out.println("Save Cliente : true");
-                else
-                    System.out.println("Save Cliente : false");
-
+                //save cliente
+                if (request.getParameter("cliente_id") != null) {
+                    new DaoCliente().save(cliente, true);//update cliente
+                } else {
+                    new DaoCliente().save(cliente, false);//save cliente
+                }                
+                if (cliente.getCli_cpf()!= null) {//check cpnj != null and show messages
+                    System.out.println("Cliente save : true");
+                } else {
+                    System.out.println("Cliente save : false");
+                }
+                
             } catch (SQLException ex) {
                 Logger.getLogger(ControllerCliente.class.getName()).log(Level.SEVERE, "Erro nos métodos save()", ex);
             }
         }
+        
         //return to page.jsp
-        response.sendRedirect("login/login.jsp");
+        if (saveOrUpdate.equals("cadClienteJuridica") || saveOrUpdate.equals("cadClienteFisica"))
+            response.sendRedirect("login/login.jsp");
+        else{
+            if(saveOrUpdate.equals("edtClienteJuridica"))
+                response.sendRedirect(request.getContextPath()+"/cadastros/edtClienteJuridica.jsp");
+            else
+                response.sendRedirect(request.getContextPath()+"/cadastros/edtClienteFisica.jsp");
+        }
     }
 
     /**

@@ -65,8 +65,10 @@ public class DaoEmpresa {
         con = Conexao.getConnection();
         try {
             if (!up) {
+                System.out.println("INSERT EMPRESA");
                 pstm = con.prepareStatement("insert into empresa_usuario(emp_cnpj,emp_razao, emp_insc_estadual, emp_usu_codigo) values (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             } else {
+                System.out.println("UPDATE EMPRESA");
                 pstm = con.prepareStatement("update empresa_usuario set emp_cnpj = ?, emp_razao = ?, emp_insc_estadual = ?, emp_usu_codigo = ? where emp_cnpj = ?");
             }
             pstm.setString(1, emp.getEmp_cnpj());
@@ -81,7 +83,7 @@ public class DaoEmpresa {
             int count = pstm.executeUpdate();
 
             if (count == 0) {
-                throw new SQLException("Erro ao salvar empresa");
+                throw new SQLException("Erro ao salvar empresa: ");
             }
             
             if(emp.getEmp_cnpj() == null){

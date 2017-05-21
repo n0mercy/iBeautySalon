@@ -75,7 +75,7 @@
                                 <!-- AdminLTE for demo purposes -->
                                 <script src="../dist/js/demo.js"></script>
                                 <!-- Validator -->
-                                <script src="../bootstrap/js//validator.min.js"></script>
+                                <script src="../bootstrap/js/validator.min.js"></script>
 
                                 <script>
                                     $(document).ready(function () {
@@ -166,10 +166,12 @@
                                     %>
                                     <div class="wrapper">
                                         <!-- /.example-modal -->
-                                        <form action="../ControllerCliente" id="form-main" name="form1" method="POST" data-toggle="validator" role="form">
-                                            <input type="hidden" value="" name=""/>
-                                            <input type="hidden" value="" name=""/>
-                                            <input type="hidden" value="" name=""/>
+                                        <form action="../ControllerCliente" id="form-main" name="form" method="POST" data-toggle="validator" role="form">
+                                            <input type="hidden" value="edtClienteJuridica" name="save"/>
+                                            <input type="hidden" value="<%= emp.getEmp_cnpj()%>" name="empresa_id"/>
+                                            <input type="hidden" value="<%= user.getUsu_codigo() %>" name="usuario_id"/>
+                                            <input type="hidden" value="<%= fone.getFon_usu_cod().getUsu_codigo() %>" name="fone_usuario"/>
+                                            <input type="hidden" value="<%= end.getEnd_codigo()%>" name="endereco_id"/>
                                             <div class="example-modal ">
                                                 <div class="modal">           
                                                     <div class="modal-dialog">
@@ -177,7 +179,7 @@
                                                             <div class="modal-header">
                                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                     <span aria-hidden="true">&times;</span></button>
-                                                                <h4 class="modal-title">Cadastro Pessoa Jurídica</h4>
+                                                                <h4 class="modal-title">Alterar Pessoa Jurídica</h4>
                                                             </div>
                                                             <div class="modal-body">
                                                                 <div class="form-group">
@@ -189,7 +191,7 @@
                                                                     <div class="input-group-addon">
                                                                         <i class="fa fa-university"></i>
                                                                     </div>
-                                                                    <input type="text" placeholder="Cnpj" name="cnpj" value="<%= emp.getEmp_cnpj()%>" class="form-control"  data-inputmask="'insc estadual'" data-mask/>
+                                                                    <input type="text" disabled="true" placeholder="Cnpj" name="cnpj" value="<%= emp.getEmp_cnpj()%>" class="form-control"  data-inputmask="'insc estadual'" data-mask/>
                                                                 </div>                                                
                                                                 <label>Inscrição Estadual</label>
                                                                 <div class="input-group">
@@ -205,7 +207,7 @@
                                                                         <div class="input-group-addon">
                                                                             <i class="fa fa-phone"></i>
                                                                         </div>
-                                                                        <input type="text" name="telefone1" placeholder="Phone 1" class="form-control" value="<%= fone.getFon_fones() != null ? fone.getFon_fones() : ""%>"  data-inputmask='"mask": "(92) 99999-9999"' data-mask/>
+                                                                        <input type="text" name="telefone1" placeholder="Phone 1" class="form-control" value="<%= fone.getFon_fones()%>"  data-inputmask='"mask": "(92) 99999-9999"' data-mask/>
 
                                                                         <input type="text" name="telefone2" placeholder="Phone 2" class="form-control" data-inputmask='"mask": "(92) 99999-9999"' data-mask/>
                                                                     </div>                                                           
@@ -272,12 +274,12 @@
                                                                 </div>
                                                                 <div class="form-group has-feedback">
                                                                     <label for="exampleInputEmail1">Email</label>
-                                                                    <input type="email" required class="form-control" name="email" value="<%= user.getUsu_email() != null ? user.getUsu_email() : ""%>" id="email" id="email" placeholder="Email"/>                                                                    
+                                                                    <input type="email" required class="form-control" name="email" value="<%= user.getUsu_email()%>" id="email" id="email" placeholder="Email"/>                                                                    
 
                                                                 </div>
                                                                 <div class="form-group has-feedback">
                                                                     <label for="senha">Senha</label>
-                                                                    <input type="password" data-minlength="6" required class="form-control" name="senha" value="<%= user.getUsu_senha() != null ? user.getUsu_senha() : ""%>" id="senha" placeholder="Senha"/>
+                                                                    <input type="password" data-minlength="6" required class="form-control" name="senha" value="<%= user.getUsu_senha()%>" id="senha" placeholder="Senha"/>
                                                                     <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                                                                     <span class="glyphicon form-control-feedback"></span>
                                                                     <span class="help-block with-errors"></span>

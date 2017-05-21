@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Bean.BeanCliente;
@@ -32,14 +33,16 @@ public class DaoCliente {
         con = Conexao.getConnection();
         try {
             if (!update) {
+                System.out.println("INSERT CLIENTE");
                 pstm = con.prepareStatement("insert into cliente_usuario(cli_cpf, cli_nome, cli_dtnasc, cli_usu_codigo) values (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             } else {
-                pstm = con.prepareStatement("update usuario set cli_cpf = ?, cli_nome = ?, cli_dtnasc = ?, cli_usu_codigo = ? where cli_cpf = ?");
+                System.out.println("UPDATE CLIENTE");
+                pstm = con.prepareStatement("update cliente_usuario set cli_cpf = ?, cli_nome = ?, cli_dtnasc = ?, cli_usu_codigo = ? where cli_cpf = ?");
             }
 
             pstm.setString(1, c.getCli_cpf());
             pstm.setString(2, c.getCli_nome());
-            pstm.setDate(3, new java.sql.Date(c.getCli_dtnasc().getTime()));
+            pstm.setDate(3, new java.sql.Date(new Date().getTime()));
             pstm.setInt(4, c.getCli_usu_codigo().getUsu_codigo());
             if (update)//update
             {
@@ -49,7 +52,7 @@ public class DaoCliente {
             int count = pstm.executeUpdate();
 
             if (count == 0) {
-                throw new SQLException("Erro ao salvar usuário");
+                throw new SQLException("Erro ao salvar cliente");
             }
 
             if (c.getCli_cpf() == null) {

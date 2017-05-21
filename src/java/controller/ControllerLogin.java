@@ -81,14 +81,13 @@ public class ControllerLogin extends HttpServlet {
         login = request.getParameter("login");
         senha = request.getParameter("pws");
         usuario.setUsu_email(login);
-        usuario.setUsu_senha(senha);
-        DaoUsuario dao = new DaoUsuario();        
+        usuario.setUsu_senha(senha);      
         try{
-            usuario = dao.buscarUsuario(usuario);
+            usuario = new DaoUsuario().buscarUsuario(usuario);
             System.out.println("Logado com sucesso!");
             request.getSession().setAttribute("user", usuario.getUsu_email());
             request.getSession().setAttribute("role", usuario.getUsu_tipo_codigo().getTipo_codigo());
-            response.sendRedirect("/iBeautySalon");
+            response.sendRedirect(request.getContextPath());
         }catch(Exception e){
             e.getMessage();
             System.out.println(e);
