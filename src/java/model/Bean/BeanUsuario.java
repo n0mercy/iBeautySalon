@@ -15,7 +15,7 @@ public class BeanUsuario {
     private String usu_status;
     private String usu_senha;
     private String usu_email;
-    private BeanEndereco usu_end_cep;
+    private BeanEndereco usu_end_codigo;
     private BeanTipoUsuario usu_tipo_codigo;
 
     public BeanUsuario() {
@@ -55,12 +55,12 @@ public class BeanUsuario {
         this.usu_email = usu_email;
     }
 
-    public BeanEndereco getUsu_end_cep() {
-        return usu_end_cep;
+    public BeanEndereco getUsu_end_codigo() {
+        return usu_end_codigo;
     }
 
-    public void setUsu_end_cep(BeanEndereco usu_end_cep) {
-        this.usu_end_cep = usu_end_cep;
+    public void setUsu_end_codigo(BeanEndereco usu_end_codigo) {
+        this.usu_end_codigo = usu_end_codigo;
     }
 
     public BeanTipoUsuario getUsu_tipo_codigo() {

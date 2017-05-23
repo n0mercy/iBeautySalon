@@ -31,7 +31,7 @@ public class DaoUsuario {
      public BeanUsuario buscarUsuario(BeanUsuario usu) throws SQLException{      
          try{           
             con=Conexao.getConnection();          
-            String sql="select * from usuario inner join tipo_usuario on usu_tipo_codigo=tipo_codigo  where usu_status = ? and usu_email = ?";           
+            String sql="select * from usuario inner join tipo_usuario on usu_tipo_codigo = tipo_codigo  where usu_status = ? and usu_email = ?";           
             usu.setUsu_status("Ativo");
             pstm = con.prepareStatement(sql);           
             pstm.setString(1, usu.getUsu_status());
@@ -68,14 +68,33 @@ public class DaoUsuario {
          }        
     }
      
+     public BeanUsuario findByCliente(int codigo) throws SQLException{      
+         try{           
+            con=Conexao.getConnection();          
+            String sql="select * from usuario u inner join cliente_usuario c on u.usu_codigo = c.cli_usu_codigo where c.cli_usu_codigo = ?";            
+            pstm = con.prepareStatement(sql);           
+            pstm.setInt(1, codigo);
+            rs = pstm.executeQuery();
+            usuario = createUsuario(rs);
+            return usuario;                     
+        }catch(SQLException | HeadlessException erro){
+            System.out.println("Usuario não encontrado" +erro.getMessage());            
+            return null;
+        }finally{
+             con.close();
+             rs.close();
+             pstm.close();
+         }        
+    }
+     
      private BeanUsuario createUsuario(ResultSet r){
         try {
             while (rs.next()) {
                 usuario.setUsu_codigo(rs.getInt("usu_codigo"));
                 usuario.setUsu_email(rs.getString("usu_email"));
                 usuario.setUsu_senha(rs.getString("usu_senha"));
-                usuario.setUsu_status("usu_status"); 
-                usuario.setUsu_end_cep(new DaoEndereco().findByCodigo(rs.getInt("usu_end_cep")));
+                usuario.setUsu_status(rs.getString("usu_status")); 
+                usuario.setUsu_end_codigo(new DaoEndereco().findByCodigo(rs.getInt("usu_end_codigo")));
                 usuario.setUsu_tipo_codigo(new DaoTipoUsuario().findByCodigo(rs.getInt("usu_tipo_codigo")));
             }
             return usuario;
@@ -90,16 +109,16 @@ public class DaoUsuario {
         try {
             if (usu.getUsu_codigo() == 0) {
                 System.out.println("INSERT Usuario");
-                pstm = con.prepareStatement("insert into usuario(usu_status, usu_senha, usu_email,usu_end_cep,usu_tipo_codigo) values (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                pstm = con.prepareStatement("insert into usuario(usu_status, usu_senha, usu_email,usu_end_codigo,usu_tipo_codigo) values (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             } else {
                 System.out.println("UPDATE Usuario");
-                pstm = con.prepareStatement("update usuario set usu_status = ?, usu_senha = ?, usu_email = ?, usu_end_cep = ?, usu_tipo_codigo = ? where usu_codigo = ?");
+                pstm = con.prepareStatement("update usuario set usu_status = ?, usu_senha = ?, usu_email = ?, usu_end_codigo = ?, usu_tipo_codigo = ? where usu_codigo = ?");
             }
             
             pstm.setString(1, usu.getUsu_status());
             pstm.setString(2, usu.getUsu_senha());
             pstm.setString(3, usu.getUsu_email());
-            pstm.setInt(4, usu.getUsu_end_cep().getEnd_codigo());
+            pstm.setInt(4, usu.getUsu_end_codigo().getEnd_codigo());
             pstm.setInt(5, usu.getUsu_tipo_codigo().getTipo_codigo());
             if (usu.getUsu_codigo() > 0)//update
             {

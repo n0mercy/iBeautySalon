@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.swing.JOptionPane;
 import model.Bean.BeanServico;
 import model.Dao.DaoServico;
+import util.QRCodeUtil;
 
 /**
  *
@@ -41,7 +42,7 @@ public class ControllerServico extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ControllerServico</title>");            
+            out.println("<title>Servlet ControllerServico</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet ControllerServico at " + request.getContextPath() + "</h1>");
@@ -74,19 +75,21 @@ public class ControllerServico extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-     protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         //processRequest(request, response);
         BeanServico serv = new BeanServico();
         DaoServico daoServ = new DaoServico();
-        String status = "ativo";
-        serv.setServ_nome(request.getParameter("txtdesc"));                             
-        serv.setServ_status(status);
-        daoServ.salvarServico(serv);
-       // RequestDispatcher rd = request.getRequestDispatcher("../../example/forms/cadServico.jsp");
-      //  rd.include(request,response);
-        
-        
+        String urlRequest = request.getParameter("page");
+        if (urlRequest.equals("cadServico")) {
+            String status = "ativo";
+            serv.setServ_nome(request.getParameter("txtdesc"));
+            serv.setServ_status(status);
+            daoServ.salvarServico(serv);
+        }
+        //QRCodeUtil.generateQRCode(request.getParameter("txtdesc"));
+        response.sendRedirect(request.getContextPath() + "/example/forms/cadServico.jsp");
+
         //request.getRequestDispatcher("example/forms/cadServico.jsp").include(request, response);
     }
 

@@ -42,7 +42,7 @@ public class DaoCliente {
 
             pstm.setString(1, c.getCli_cpf());
             pstm.setString(2, c.getCli_nome());
-            pstm.setDate(3, new java.sql.Date(new Date().getTime()));
+            pstm.setDate(3, new java.sql.Date(c.getCli_dtnasc().getTime()));
             pstm.setInt(4, c.getCli_usu_codigo().getUsu_codigo());
             if (update)//update
             {
@@ -89,6 +89,25 @@ public class DaoCliente {
             String sql = "select * from cliente_usuario where cli_cpf = ?";
             pstm = con.prepareStatement(sql);
             pstm.setString(1, cpf);
+            rs = pstm.executeQuery();
+            cliente = createCliente(rs);
+            return cliente;
+        } catch (SQLException | HeadlessException erro) {
+            System.out.println("Cliente não encontrado" + erro.getMessage());
+            return null;
+        } finally {
+            con.close();
+            rs.close();
+            pstm.close();
+        }
+    }
+    
+    public BeanCliente findByUser(int user_id) throws SQLException {
+        try {
+            con = Conexao.getConnection();
+            String sql = "select * from cliente_usuario where cli_usu_codigo = ?";
+            pstm = con.prepareStatement(sql);
+            pstm.setInt(1, user_id);
             rs = pstm.executeQuery();
             cliente = createCliente(rs);
             return cliente;

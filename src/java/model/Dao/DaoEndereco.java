@@ -70,7 +70,6 @@ public class DaoEndereco {
         try {
             while (r.next()) {
                 end.setEnd_codigo(r.getInt("end_codigo"));
-                end.setEnd_compl(r.getString("end_compl")); 
                 end.setEnd_ref(r.getString("end_ref"));
                 end.setEnd_num(r.getString("end_num"));  
                 end.setEnd_cep(new DaoCep().findByCodigo(rs.getString("end_cep"))); 

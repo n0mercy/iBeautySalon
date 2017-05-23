@@ -122,7 +122,7 @@
                                                     + "usuario on emp_usu_codigo = usu_codigo left join "
                                                     + "fones on fone_usu_codigo = usu_codigo inner join "
                                                     + "tipo_usuario on usu_tipo_codigo= tipo_codigo inner join "
-                                                    + "endereco on usu_end_cep = end_codigo inner join "
+                                                    + "endereco on usu_end_codigo = end_codigo inner join "
                                                     + "cep on end_cep= cep_cep inner join "
                                                     + "bairro on cep_bai_codigo=bai_codigo inner join "
                                                     + "zona on bai_zona_cod=zona_cod "
@@ -169,8 +169,8 @@
                                         <form action="../ControllerCliente" id="form-main" name="form" method="POST" data-toggle="validator" role="form">
                                             <input type="hidden" value="edtClienteJuridica" name="save"/>
                                             <input type="hidden" value="<%= emp.getEmp_cnpj()%>" name="empresa_id"/>
-                                            <input type="hidden" value="<%= user.getUsu_codigo() %>" name="usuario_id"/>
-                                            <input type="hidden" value="<%= fone.getFon_usu_cod().getUsu_codigo() %>" name="fone_usuario"/>
+                                            <input type="hidden" value="<%= user.getUsu_codigo()%>" name="usuario_id"/>
+                                            <input type="hidden" value="<%= fone.getFon_usu_cod().getUsu_codigo()%>" name="fone_usuario"/>
                                             <input type="hidden" value="<%= end.getEnd_codigo()%>" name="endereco_id"/>
                                             <div class="example-modal ">
                                                 <div class="modal">           
@@ -207,9 +207,7 @@
                                                                         <div class="input-group-addon">
                                                                             <i class="fa fa-phone"></i>
                                                                         </div>
-                                                                        <input type="text" name="telefone1" placeholder="Phone 1" class="form-control" value="<%= fone.getFon_fones()%>"  data-inputmask='"mask": "(92) 99999-9999"' data-mask/>
-
-                                                                        <input type="text" name="telefone2" placeholder="Phone 2" class="form-control" data-inputmask='"mask": "(92) 99999-9999"' data-mask/>
+                                                                        <input type="text" name="telefone1" placeholder="Phone 1" class="form-control" value="<%= fone.getFon_fones()%>"  data-inputmask='"mask": "(92) 99999-9999"' data-mask/>                                                                        
                                                                     </div>                                                           
                                                                 </div>
                                                                 <div class="form-group">                

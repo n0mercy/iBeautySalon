@@ -39,7 +39,7 @@ public class ControllerLogin extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ControllerLogin</title>");            
+            out.println("<title>Servlet ControllerLogin</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet ControllerLogin at " + request.getContextPath() + "</h1>");
@@ -79,18 +79,31 @@ public class ControllerLogin extends HttpServlet {
         String login = null;
         String senha = null;
         login = request.getParameter("login");
-        senha = request.getParameter("pws");
+        senha = request.getParameter("pwd");
         usuario.setUsu_email(login);
-        usuario.setUsu_senha(senha);      
-        try{
+        usuario.setUsu_senha(senha);
+        try {
             usuario = new DaoUsuario().buscarUsuario(usuario);
-            System.out.println("Logado com sucesso!");
-            request.getSession().setAttribute("user", usuario.getUsu_email());
-            request.getSession().setAttribute("role", usuario.getUsu_tipo_codigo().getTipo_codigo());
-            response.sendRedirect(request.getContextPath());
-        }catch(Exception e){
+            if (usuario.getUsu_email() != null) {
+                if (usuario.getUsu_senha().equals(senha)) {
+                    System.out.println("Logado com sucesso!");
+                    request.getSession().setAttribute("user", usuario.getUsu_email());
+                    request.getSession().setAttribute("username", usuario.getUsu_email().substring(0,usuario.getUsu_email().indexOf("@")));
+                    request.getSession().setAttribute("role", usuario.getUsu_tipo_codigo().getTipo_codigo());
+                    response.sendRedirect(request.getContextPath());
+                } else {
+                    System.out.println("Senha inválida!");
+                    response.sendRedirect(request.getContextPath());
+                }
+            } else {
+                System.out.println("Usuário não encontrado!");
+                response.sendRedirect(request.getContextPath());
+            }
+
+        } catch (Exception e) {
             e.getMessage();
             System.out.println(e);
+            response.sendRedirect(request.getContextPath());
         }
     }
 

@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import model.Bean.BeanEmpresa;
+import model.Bean.BeanOferece;
 import model.Bean.BeanServico;
 import model.connection.Conexao;
 
@@ -24,7 +26,8 @@ public class DaoServico {
     Connection con = model.connection.Conexao.getConnection();
     PreparedStatement pstm;
     ResultSet rs;
-    List<BeanServico> servicos = new ArrayList<BeanServico>();    
+    List<BeanServico> servicos = new ArrayList<BeanServico>();
+    BeanServico servico = new BeanServico();
         
     public void salvarServico(BeanServico serv){
        try{
@@ -54,6 +57,7 @@ public class DaoServico {
             System.out.println("Erro ao alterar serviço " +erro.getMessage());            
         }       
     }
+    
     public List<BeanServico> listarServicos(BeanServico serv) {
         con=Conexao.getConnection();            
         String sql = "SELECT * FROM servicos where serv_nome like '%"+serv.getServ_nome()+"%'";     
@@ -78,6 +82,34 @@ public class DaoServico {
             System.out.println("Erro ao listar servicos"+e);
         }        
         return servicos;
+    }
+    
+    public BeanServico findByCodigo(int serv) throws SQLException {
+        try {
+            con = Conexao.getConnection();
+            String sql = "select * from servico where serv_codigo = ?";
+            pstm = con.prepareStatement(sql);
+            pstm.setInt(1, serv);
+            rs = pstm.executeQuery();
+            servico = createServico(rs);
+            return servico;
+        } catch (SQLException | HeadlessException erro) {
+            System.out.println("Serviço não encontrado" + erro.getMessage());
+            return null;
+        } finally {
+            con.close();
+            rs.close();
+            pstm.close();
+        }
+    }
+    
+    private BeanServico createServico(ResultSet r) throws SQLException {
+        while(rs.next()){           
+            servico.setServ_cod(rs.getInt("serv_codigo"));
+            servico.setServ_nome(rs.getString("serv_desc"));
+            servico.setServ_status(rs.getString("serv_status"));
+        }       
+        return servico;
     }
 
 }

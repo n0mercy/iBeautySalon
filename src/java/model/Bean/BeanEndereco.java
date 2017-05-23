@@ -10,9 +10,9 @@ package model.Bean;
  * @author VaiDiegoo
  */
 public class BeanEndereco {
+    
     private int end_codigo;
     private String end_ref;
-    private String end_compl;
     private String end_num;
     private BeanCep end_cep;
 
@@ -35,14 +35,6 @@ public class BeanEndereco {
 
     public void setEnd_ref(String end_ref) {
         this.end_ref = end_ref;
-    }
-
-    public String getEnd_compl() {
-        return end_compl;
-    }
-
-    public void setEnd_compl(String end_compl) {
-        this.end_compl = end_compl;
     }
 
     public String getEnd_num() {

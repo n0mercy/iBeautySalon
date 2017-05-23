@@ -131,7 +131,7 @@
                                                             + "usuario ON cli_usu_codigo = usu_codigo left join "
                                                             + "fones on fone_usu_codigo = usu_codigo inner join "
                                                             + "tipo_usuario on usu_tipo_codigo= tipo_codigo inner join "
-                                                            + "endereco on usu_end_cep = end_codigo inner join "
+                                                            + "endereco on usu_end_codigo = end_codigo inner join "
                                                             + "cep on end_cep= cep_cep inner join "
                                                             + "bairro on cep_bai_codigo=bai_codigo inner join "
                                                             + "zona on bai_zona_cod=zona_cod "
@@ -167,7 +167,6 @@
                                                     if (request.getParameter("cep") != null) {
                                                         cep = new DaoCep().findByCodigo(request.getParameter("cep"));
                                                         end = new DaoEndereco().findByCep(cep.getCep_cep());
-                                                        System.out.println(request.getParameter("cep") + ": cep encontrado");
                                                     }
                                                 }
 

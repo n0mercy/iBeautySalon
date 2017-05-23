@@ -34,7 +34,7 @@ public class DaoCep {
             pstm = con.prepareStatement(sql);           
             pstm.setString(1, codigo);
             rs = pstm.executeQuery();
-            cep = createBairro(rs);
+            cep = createCep(rs);
             return cep;                     
         }catch(SQLException | HeadlessException erro){
             System.out.println("Cep não encontrado" +erro.getMessage());            
@@ -46,7 +46,7 @@ public class DaoCep {
          }       
     }
      
-     private BeanCep createBairro(ResultSet r){
+     private BeanCep createCep(ResultSet r){
         try {
             while (rs.next()) {
                 cep.setCep_cep(r.getString("cep_cep"));
