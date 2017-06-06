@@ -101,10 +101,8 @@
                                                             listEmpresa = new DaoEmpresa().findEmpresasByCEP(cep);
                                                         }else{
                                                             if(cliente.getCli_cpf() != null){
-                                                                System.out.println("CPF pendente not null: "+cliente.getCli_cpf());
                                                                 listEmpresa = new DaoEmpresa().findByCpfStatusPendente(cliente.getCli_cpf());
                                                             }else{
-                                                                System.out.println("CPF pendente Nulo");
                                                                 listEmpresa = new DaoEmpresa().findAllEmpresas();
                                                             }
                                                         }

@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,38 +24,77 @@ import static model.Dao.BaseDao.getConnection;
  *
  * @author VaiDiegoo
  */
-public class DaoRealiza extends BaseDao{
+public class DaoRealiza extends BaseDao {
+
     Connection con;
     PreparedStatement pstm;
     ResultSet rs;
     List<BeanRealiza> list;
     BeanRealiza mensalidade = new BeanRealiza();
-    
-    public void save(BeanRealiza mens, boolean novaMensa) throws SQLException {
+
+    public void save(BeanRealiza mens, boolean primeiroPagamento, boolean novaMensa) throws SQLException {
         con = getConnection();
         try {
-            if (mens.getReal_cod() == 0) {
-                System.out.println("INSERT MENSALIDADE");
-                pstm = con.prepareStatement("insert into realiza(real_datapag, real_valor, real_dtVenc, real_status, real_emp_cnpj, real_pag_codigo) values (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            StringBuilder sb = new StringBuilder();
+            if (novaMensa) {
+                System.out.println("INSERT NOVA MENSALIDADE");
+                sb.append("insert into realiza(real_datapag, real_valor, real_dtVenc, real_status, real_emp_cnpj, real_pag_codigo) values (?,?,?,?,?,?)");
+            } else if (primeiroPagamento) {
+                System.out.println("INSERT PRIMEIRA MENSALIDADE");
+                sb.append("insert into realiza(real_datapag, real_valor, real_dtVenc, real_status, real_emp_cnpj) values (?,?,?,?,?)");
             } else {
                 System.out.println("UPDATE MENSALIDADE");
-                pstm = con.prepareStatement("update realiza set real_datapag = ?, real_valor = ?, real_dtVenc = ?, real_status = ?, real_emp_cnpj = ?, real_pag_codigo = ? where real_codigo = ?");
+                if(mens.getReal_pag_codigo().getPag_desc() == null){
+                    System.out.println("PAG NULO");
+                    sb.append("update realiza set real_datapag = ?, real_valor = ?, real_dtVenc = ?, real_status = ?, real_emp_cnpj = ? where real_codigo = ?");
+                }else{
+                    System.out.println("PAG NÂO NULO");
+                    sb.append("update realiza set real_datapag = ?, real_valor = ?, real_dtVenc = ?, real_status = ?, real_emp_cnpj = ?, real_pag_codigo = ? where real_codigo = ?");
+                }
             }
-            System.out.println("STATUS: "+mens.getReal_status());
-            pstm.setDate(1, new java.sql.Date(mens.getReal_datapag().getTime()));
-            pstm.setDouble(2, mens.getReal_valor());
-            pstm.setDate(3, new java.sql.Date(mens.getReal_dtVenc().getTime()));
-            pstm.setString(4, mens.getReal_status());
-            pstm.setString(5, mens.getReal_emp_cnpj().getEmp_cnpj());
-            pstm.setInt(6, 1);
-            
+            if (mens.getReal_cod() == 0) {
+                pstm = con.prepareStatement(sb.toString(), Statement.RETURN_GENERATED_KEYS);
+            }else{
+                pstm = con.prepareStatement(sb.toString());
+            }
+
+            if (primeiroPagamento) {
+                pstm.setDate(1, null);
+                pstm.setDouble(2, mens.getReal_valor());
+                pstm.setDate(3, null);
+                pstm.setString(4, mens.getReal_status());
+                pstm.setString(5, mens.getReal_emp_cnpj().getEmp_cnpj());
+            } else {
+                if(mens.getReal_datapag() != null)
+                    pstm.setDate(1, new java.sql.Date(mens.getReal_datapag().getTime()));
+                else
+                    pstm.setDate(1, null);
+                
+                pstm.setDouble(2, mens.getReal_valor());
+                
+                if(mens.getReal_dtVenc() != null)
+                    pstm.setDate(3, new java.sql.Date(mens.getReal_dtVenc().getTime()));
+                else
+                    pstm.setDate(3, null);
+                
+                pstm.setString(4, mens.getReal_status());
+                pstm.setString(5, mens.getReal_emp_cnpj().getEmp_cnpj());
+                
+                if (mens.getReal_pag_codigo().getPag_desc() != null)
+                    pstm.setInt(6, mens.getReal_pag_codigo().getPag_codigo());
+                
+            }
+
             if (mens.getReal_cod() > 0)//update
             {
-                pstm.setLong(7, mens.getReal_cod());
+                if(mens.getReal_pag_codigo().getPag_desc() == null)
+                    pstm.setLong(6, mens.getReal_cod());
+                else
+                    pstm.setLong(7, mens.getReal_cod());
             }
 
             int count = pstm.executeUpdate();
-            
+
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o mensalidade");
             }
@@ -85,15 +125,15 @@ public class DaoRealiza extends BaseDao{
         }
         return 0;
     }
-    
+
     public BeanRealiza findByCnpj(String cnpj) throws SQLException {
         con = getConnection();
         try {
-            String sql = "select * from realiza where real_emp_cnpj = ?";
+            String sql = "select * from realiza where real_emp_cnpj = ? and real_status = 'pendente'";
             pstm = con.prepareStatement(sql);
             pstm.setString(1, cnpj);
             rs = pstm.executeQuery();
-            mensalidade = createMensalidade(rs);            
+            mensalidade = createMensalidade(rs);
             return mensalidade;
         } catch (SQLException | HeadlessException erro) {
             System.out.println("Cep não encontrado" + erro.getMessage());
@@ -112,7 +152,7 @@ public class DaoRealiza extends BaseDao{
             }
         }
     }
-    
+
     private BeanRealiza createMensalidade(ResultSet r) {
         try {
             list = new ArrayList<>();

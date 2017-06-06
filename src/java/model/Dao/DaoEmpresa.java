@@ -167,7 +167,8 @@ public class DaoEmpresa extends BaseDao{
         con = getConnection();
         try {
             StringBuilder sb = new StringBuilder();
-            sb.append("select * from empresa_usuario inner join ");
+            sb.append("select * from empresa_usuario inner join "); 
+            sb.append("oferece ON ofe_emp_cnpj = emp_cnpj inner join ");          
             sb.append("usuario on emp_usu_codigo = usu_codigo left join ");
             sb.append("fones on fone_usu_codigo = usu_codigo inner join ");
             sb.append("tipo_usuario on usu_tipo_codigo= tipo_codigo inner join ");
@@ -175,6 +176,7 @@ public class DaoEmpresa extends BaseDao{
             sb.append("cep on end_cep = cep_cep inner join ");
             sb.append("bairro on cep_bai_codigo=bai_codigo inner join ");
             sb.append("zona on bai_zona_cod=zona_cod where usu_status='Ativo'");
+            sb.append("group by emp_cnpj");
             pstm = con.prepareStatement(sb.toString());
             rs = pstm.executeQuery();
             emp = createEmpresa(rs);

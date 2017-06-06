@@ -1,9 +1,14 @@
 <%-- 
-    Document   : listaSalaoAtendimento
-    Created on : 02/06/2017, 17:03:13
+    Document   : cuponsComprados
+    Created on : 06/06/2017, 14:49:15
     Author     : n0mercy
 --%>
 
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="model.Dao.DaoCliente"%>
+<%@page import="model.Bean.BeanCliente"%>
+<%@page import="model.Dao.DaoUsuario"%>
+<%@page import="model.Bean.BeanUsuario"%>
 <%@page import="model.Dao.DaoCupom"%>
 <%@page import="model.Dao.DaoEmpresa"%>
 <%@page import="model.Bean.BeanEmpresa"%>
@@ -61,8 +66,11 @@
 <body>
     <%
         List<BeanCupom> list = new ArrayList<BeanCupom>();
-        if (request.getParameter("empresa_id") != null) {
-            list = new DaoCupom().findByEmpStatusAtendimento(request.getParameter("empresa_id"));
+        BeanCliente c = new BeanCliente();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        if (request.getSession().getAttribute("user") != null) {
+            c = new DaoCliente().findClienteBySession(request.getSession().getAttribute("user").toString());
+            list = new DaoCupom().findCuponsCompradosByCPF(c.getCli_cpf());
         }
     %>
     <div class="wrapper">
@@ -74,7 +82,7 @@
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">Lista de Atendimento Salão</h4>
+                            <h4 class="modal-title">Cupons Comprados</h4>
                         </div>                                                                     
                         <div class="box">                                                                    
                             <!-- /.Começa a div da tabela -->
@@ -83,20 +91,35 @@
                                     <table id="example1" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>                 
-                                                <th>Cupom</th>  
-                                                <th>Status</th>  
-                                                <th>Cliente</th>                                                                                               
+                                                <th style="text-align: center">Cupons</th>
                                             </tr>
                                         </thead>
                                         <%if (list.size() > 0) {%>
                                         <tbody> 
                                             <%
-                                                for (BeanCupom c : list) {
+                                                for (BeanCupom cupom : list) {
                                             %>
-                                            <tr>                 
-                                                <td ><%=c.getCupom_codigo()%></td>
-                                                <td><%=c.getCupom_status()%></td>
-                                                <td><%=c.getCupom_clicpf().getCli_nome()%></td>                                                                                        
+                                            <tr> 
+                                                <td>
+                                                    <div class="box box-default">
+                                                        <div class="box-header with-border">
+                                                            <h1 class="box-title">cupom <%=cupom.getCupom_codigo()%></h1>
+
+                                                            <div class="box-tools pull-right">
+                                                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus">show</i></button>            
+                                                            </div>
+                                                        </div>
+                                                        <div class="box-body">
+                                                            <img src="../../images/<%=cupom.getCupom_codigo()%>.png" alt=""/>
+                                                            <div>
+                                                                Status: <%=cupom.getCupom_status()%><br>                                                                                       
+                                                                Data: <%=sdf.format(cupom.getCupom_data())%>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </td>
+
                                             </tr> 
                                             <%
                                                 }

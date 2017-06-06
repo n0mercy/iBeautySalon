@@ -93,6 +93,7 @@ public class ControllerPagamento extends HttpServlet {
         BeanRealiza mensa = new BeanRealiza();
         BeanRealiza mensaNova;
         BeanUsuario ususario = new BeanUsuario();
+        
         if (page.equals("cupomPagamento")) {
             if (action.equals("confirm")) {
                 int cod_cupom = Integer.parseInt(request.getParameter("cupom_id"));
@@ -127,26 +128,28 @@ public class ControllerPagamento extends HttpServlet {
                 ususario = new DaoUsuario().findByUserSession(emp.getEmp_usu_codigo().getUsu_email());
                 ususario.setUsu_status("Ativo");
                 new DaoUsuario().save(ususario);
-                System.out.println("CNPJ: " + emp.getEmp_cnpj());
+                //update mesalidade = status{pendente to fechado}
                 mensa = new DaoRealiza().findByCnpj(emp.getEmp_cnpj());
-                System.out.println("MENSA CNPJ: " + mensa.getReal_emp_cnpj().getEmp_cnpj());
-                mensa.setReal_status("fechado");
-                new DaoRealiza().save(mensa, false);
-
+                mensa.setReal_status("fechado");                
+                new DaoRealiza().save(mensa, false, false);
+                
+                
+                //generate next mensalidade
                 mensaNova = new BeanRealiza();
                 mensaNova.setReal_datapag(new Date());
                 mensaNova.setReal_dtVenc(dt);
                 mensaNova.setReal_status("pendente");
                 mensaNova.setReal_emp_cnpj(emp);
                 mensaNova.setReal_pag_codigo(new DaoPagamento().findByCodigo(Integer.parseInt(pagForm)));
-
                 mensaNova.setReal_valor(50.0);
-                new DaoRealiza().save(mensaNova, true);
+                
+                new DaoRealiza().save(mensaNova, false, true);
 
             } catch (SQLException ex) {
                 Logger.getLogger(ControllerPagamento.class.getName()).log(Level.SEVERE, null, ex);
             }
-            path = "/";
+            String msg = "Mensalidade paga com sucesso!";
+            path = "/example/pages/pageMessage.jsp?message="+msg;
         }
         response.sendRedirect(request.getContextPath() + path);
     }

@@ -23,7 +23,7 @@ public class QRCodeUtil {
     public static void generateQRCode(String code) {
         String myCodeText = null;
         SimpleDateFormat sdf = new SimpleDateFormat("hhmmss");
-        String filePath = "C:/Users/hell-/Desktop/images/" + code + ".png";
+        String filePath = "C:/Users/hell-/Documents/NetBeansProjects/iBeautySalon/iBeautySalon/web/images/" + code + ".png";
         myCodeText = String.valueOf(code);
         int size = 250;
         String fileType = "png";

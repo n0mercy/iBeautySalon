@@ -63,6 +63,7 @@
                 cliente = new DaoCliente().findByUser(usuario.getUsu_codigo());
                 cupom = new DaoCupom().findByCliente(cliente.getCli_cpf());
                 qrcode = cupom.getCupom_codigo();
+                System.out.print("CUPOM ID: "+qrcode);
                 listItem = new DaoItemServico().findItensByCupom(cupom.getCupom_codigo());
             } else {
                 System.out.println("Usuário na session = false");
@@ -160,7 +161,7 @@
                                     <label>Valor Total</label>: R$<%= total%>
                                 </td>
                                 <td> 
-                                    <!--<img src="../../images/<%= qrcode %>.png" title="QRCode para identificação" class="pull-right"/>-->
+                                    <img src="../../images/<%= qrcode %>.png" class="pull-right"/>
                                 </td>
                             </tr>
                         </table>
@@ -171,7 +172,7 @@
             <!-- /.row -->
             <!-- this row will not appear when printing -->
             <form method="POST" action="../../ControllerPagamento">
-                <input type="hidden" name="cupom_id" value="<%= cupom.getCupom_codigo() %>"/>
+                <input type="hidden" name="cupom_id" value="<%= cupom.getCupom_codigo()%>"/>
                 <input type="hidden" name="page" value="cupomPagamento"/>
                 <div class="row no-print">
                     <div class="col-xs-12">          

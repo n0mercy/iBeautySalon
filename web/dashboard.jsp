@@ -91,15 +91,6 @@
                                                                         <!-- sidebar menu: : style can be found in sidebar.less -->
                                                                         <ul class="sidebar-menu">
                                                                             <li class="header">Menu Principal</li>
-                                                                            <li class="active treeview">
-                                                                                <a href="#">
-                                                                                    <i class="fa fa-dashboard"></i> <span>Painel</span>
-                                                                                    <span class="pull-right-container">
-                                                                                        <i class="fa fa-angle-left pull-right"></i>            </span>          </a>
-                                                                                <ul class="treeview-menu">
-                                                                                    <li class="active"><a href="/iBeautySalon/index.jsp"><i class="fa fa-circle-o"></i> MenuPrincipal</a></li>           
-                                                                                </ul>
-                                                                            </li>
                                                                             <li class="treeview">
                                                                                 <a href="#">
                                                                                     <i class="fa fa-laptop"></i>
@@ -110,7 +101,7 @@
                                                                                     <%
                                                                                         Integer role = (Integer) request.getSession().getAttribute("role");
                                                                                         String status = (String) request.getSession().getAttribute("status");
-                                                                                        if (role == 2 || role == 1) {
+                                                                                        if (role == 2) {
                                                                                     %>
                                                                                     <li><a href="example/pages/buscarCep.jsp" target="mainFrame"><i class="fa fa-circle-o"></i> Buscar Salões</a></li>
                                                                                         <%
@@ -151,7 +142,8 @@
                                                                                     <i class=" fa-sticky-note-o"></i>
                                                                                     <span>Cupons</span>
                                                                                     <span class="pull-right-container">
-                                                                                        <i class="fa fa-angle-left pull-right"></i>            </span>
+                                                                                        <i class="fa fa-angle-left pull-right"></i>
+                                                                                    </span>
                                                                                 </a>
                                                                                 <ul class="treeview-menu">
                                                                                     <%
@@ -162,7 +154,7 @@
                                                                                             }
                                                                                             if (role == 2) {
                                                                                         %>
-                                                                                    <li><a href="#" ><i class="fa fa-circle-o"></i> Consultar Comprados</a></li>       
+                                                                                    <li><a href="example/pages/cuponsComprados.jsp" target="mainFrame"><i class="fa fa-circle-o"></i> Consultar Comprados</a></li>       
                                                                                         <%
                                                                                             }
                                                                                         %>
@@ -261,7 +253,8 @@
                                                                                 <li class="header">Sobre Nós</li>
                                                                                 <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>IBeautySalon</span></a></li>  
                                                                             </li>
-                                                                            <li class="treeview">          
+                                                                            <li class="treeview">    
+                                                                                <li class="header">Entre em contato</li>
                                                                                 <li><a href="#"><i class="fa fa-circle-o text-blue"></i> <span>Contatos</span></a></li>  
                                                                             </li>
                                                                             <li class="treeview">          

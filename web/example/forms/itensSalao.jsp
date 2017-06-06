@@ -123,13 +123,14 @@
                         <%= endereco.getEnd_cep().getRua()%><br>
                         <%= endereco.getEnd_cep().getCep_cep()%><br>
                         <%= endereco.getEnd_cep().getCep_bai_codigo().getBai_nome()%>, <%= endereco.getEnd_num()%><br>
+                        Zona <%= endereco.getEnd_cep().getCep_bai_codigo().getBai_zona_cod().getZona_nome() %><br>
                         Contato: <%= fone.getFon_fones()%><br>
                         Email: <%= usuario.getUsu_email()%>
                     </address>
                 </div>
                      <div class="col-sm-4 invoice-col">        
                     <address>
-                        <button type="button" onClick="location.href='listaSalaoAtendimento.jsp'" class="btn btn-primary pull-right" style="margin-right: 5px;">
+                        <button type="button" onClick="location.href='listaSalaoAtendimento.jsp?empresa_id=<%=emp.getEmp_cnpj()%>'" class="btn btn-primary pull-right" style="margin-right: 5px;">
                             <i class="fa fa-download"></i> Lista Atendimento Salão
                         </button>
                     </address>

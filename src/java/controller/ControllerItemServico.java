@@ -56,7 +56,7 @@ public class ControllerItemServico extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ControllerItemServico</title>");            
+            out.println("<title>Servlet ControllerItemServico</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet ControllerItemServico at " + request.getContextPath() + "</h1>");
@@ -97,10 +97,10 @@ public class ControllerItemServico extends HttpServlet {
         BeanCupom cupom = new BeanCupom();
         BeanCliente cliente = new BeanCliente();
         BeanPagamento pag = new BeanPagamento();
-        
-        if(request.getSession().getAttribute("user") != null){
+
+        if (request.getSession().getAttribute("user") != null) {
             try {
-                String email = (String)request.getSession().getAttribute("user");
+                String email = (String) request.getSession().getAttribute("user");
                 user.setUsu_email(email);
                 user.setUsu_status("Ativo");
                 user = new DaoUsuario().buscarUsuario(user);
@@ -110,70 +110,69 @@ public class ControllerItemServico extends HttpServlet {
                 Logger.getLogger(ControllerItemServico.class.getName()).log(Level.SEVERE, "Error ao pegar usuário da session", ex);
             }
         }
-        
+
         //from page
         String urlRequest = request.getParameter("page");
-        
-        String itensOffer[] = request.getParameterValues("selected_services");        
-        String selected_id[] = new String[itensOffer.length];
+        String itensOffer[] = request.getParameterValues("selected_services");
         
         //Date after one month
         LocalDateTime dateAfter30Days = LocalDateTime.now().plusDays(30);
         Date dt = Date.from(dateAfter30Days.toInstant(ZoneOffset.UTC));
-        
-        
+
         int i = 0;
         double total = 0;
-        if(urlRequest.equals("itensSalao")){ 
-            try {
-                cupom = new DaoCupom().findByCliente(cliente.getCli_cpf());
-            } catch (SQLException ex) {
-                Logger.getLogger(ControllerItemServico.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            if(cupom.getCupom_codigo() > 0){
-                System.out.println("CUPOM PENDENTE SENDO UTILIZADO: "+cupom.getCupom_data());
-            }else{
-                System.out.println("NOVO CUPOM SENDO GERADO...");
-            cupom.setCupom_clicpf(cliente);
-            cupom.setCupom_data(new Date());
-            cupom.setCupom_validade(dt);
-            cupom.setCupom_pag_codigo(pag);
-            cupom.setCupom_status("pendente");
-            }
-            try {
-                new DaoCupom().save(cupom);
-                System.out.println("CUPOM GERADO: "+cupom.getCupom_codigo());
-            } catch (SQLException ex) {
-                Logger.getLogger(ControllerItemServico.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            for(String offer: itensOffer){
-                item = new BeanItemServico();
-                ofe = new BeanOferece();
-                total += Double.parseDouble(offer.substring(0,offer.indexOf(":")));
-                selected_id[i] = offer.substring(offer.indexOf(":") + 1);
+        if (urlRequest.equals("itensSalao")) {
+            if (request.getParameterValues("selected_services") != null) {
+                String selected_id[] = new String[itensOffer.length];
                 try {
-                    ofe = new DaoOferece().findByCodigo(Integer.parseInt(selected_id[i]));
+                    cupom = new DaoCupom().findByCliente(cliente.getCli_cpf());
                 } catch (SQLException ex) {
-                    Logger.getLogger(ControllerItemServico.class.getName()).log(Level.SEVERE, "Error na obtenção do objeto Oferece", ex);
+                    Logger.getLogger(ControllerItemServico.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                item.setItemserv_ofe_cod(ofe);
-                item.setItemserv_cupom_cod(cupom);
-                item.setItemserv_func_cod(null);
-                item.setItemserv_data(new Date());
-                
+                if (cupom.getCupom_codigo() > 0) {
+                    System.out.println("CUPOM PENDENTE SENDO UTILIZADO: " + cupom.getCupom_data());
+                } else {
+                    System.out.println("NOVO CUPOM SENDO GERADO...");
+                    cupom.setCupom_clicpf(cliente);
+                    cupom.setCupom_data(new Date());
+                    cupom.setCupom_validade(dt);
+                    cupom.setCupom_pag_codigo(pag);
+                    cupom.setCupom_status("pendente");
+                }
                 try {
-                    new DaoItemServico().save(item);
-                    
+                    new DaoCupom().save(cupom);
+                    System.out.println("CUPOM GERADO: " + cupom.getCupom_codigo());
                 } catch (SQLException ex) {
-                    Logger.getLogger(ControllerItemServico.class.getName()).log(Level.SEVERE, "Erro ao salvar ItemServico", ex);
+                    Logger.getLogger(ControllerItemServico.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                i++;
+                for (String offer : itensOffer) {
+                    item = new BeanItemServico();
+                    ofe = new BeanOferece();
+                    total += Double.parseDouble(offer.substring(0, offer.indexOf(":")));
+                    selected_id[i] = offer.substring(offer.indexOf(":") + 1);
+                    try {
+                        ofe = new DaoOferece().findByCodigo(Integer.parseInt(selected_id[i]));
+                    } catch (SQLException ex) {
+                        Logger.getLogger(ControllerItemServico.class.getName()).log(Level.SEVERE, "Error na obtenção do objeto Oferece", ex);
+                    }
+                    item.setItemserv_ofe_cod(ofe);
+                    item.setItemserv_cupom_cod(cupom);
+                    item.setItemserv_func_cod(null);
+                    item.setItemserv_data(new Date());
+
+                    try {
+                        new DaoItemServico().save(item);
+
+                    } catch (SQLException ex) {
+                        Logger.getLogger(ControllerItemServico.class.getName()).log(Level.SEVERE, "Erro ao salvar ItemServico", ex);
+                    }
+                    i++;
+                }
+                QRCodeUtil.generateQRCode(String.valueOf(cupom.getCupom_codigo()));
+            } else {
+                System.out.println("ERROR SERVLET ITEM");
             }
-            QRCodeUtil.generateQRCode(String.valueOf(cupom.getCupom_codigo()));
-        }else{
-            System.out.println("ERROR SERVLET ITEM");
         }
-        
         response.sendRedirect(request.getContextPath() + "/example/forms/cupomPagamento.jsp");
     }
 
