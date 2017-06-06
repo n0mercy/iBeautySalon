@@ -5,12 +5,9 @@
  */
 package controller;
 
-import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
@@ -114,25 +111,35 @@ public class ControllerItemServico extends HttpServlet {
             }
         }
         
-        
+        //from page
         String urlRequest = request.getParameter("page");
+        
         String itensOffer[] = request.getParameterValues("selected_services");        
         String selected_id[] = new String[itensOffer.length];
         
         //Date after one month
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        LocalDateTime dateAfter10Days = LocalDateTime.now().plusDays(30);
-        Date dt = Date.from(dateAfter10Days.toInstant(ZoneOffset.UTC));
+        LocalDateTime dateAfter30Days = LocalDateTime.now().plusDays(30);
+        Date dt = Date.from(dateAfter30Days.toInstant(ZoneOffset.UTC));
         
         
         int i = 0;
         double total = 0;
         if(urlRequest.equals("itensSalao")){ 
+            try {
+                cupom = new DaoCupom().findByCliente(cliente.getCli_cpf());
+            } catch (SQLException ex) {
+                Logger.getLogger(ControllerItemServico.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if(cupom.getCupom_codigo() > 0){
+                System.out.println("CUPOM PENDENTE SENDO UTILIZADO: "+cupom.getCupom_data());
+            }else{
+                System.out.println("NOVO CUPOM SENDO GERADO...");
             cupom.setCupom_clicpf(cliente);
             cupom.setCupom_data(new Date());
             cupom.setCupom_validade(dt);
             cupom.setCupom_pag_codigo(pag);
             cupom.setCupom_status("pendente");
+            }
             try {
                 new DaoCupom().save(cupom);
                 System.out.println("CUPOM GERADO: "+cupom.getCupom_codigo());
@@ -144,13 +151,11 @@ public class ControllerItemServico extends HttpServlet {
                 ofe = new BeanOferece();
                 total += Double.parseDouble(offer.substring(0,offer.indexOf(":")));
                 selected_id[i] = offer.substring(offer.indexOf(":") + 1);
-                System.out.println("SELECTED: "+selected_id[i]);
                 try {
                     ofe = new DaoOferece().findByCodigo(Integer.parseInt(selected_id[i]));
                 } catch (SQLException ex) {
                     Logger.getLogger(ControllerItemServico.class.getName()).log(Level.SEVERE, "Error na obtenção do objeto Oferece", ex);
                 }
-                System.out.println("ID OFERECE: "+ofe.getOfe_codigo());
                 item.setItemserv_ofe_cod(ofe);
                 item.setItemserv_cupom_cod(cupom);
                 item.setItemserv_func_cod(null);
@@ -169,7 +174,7 @@ public class ControllerItemServico extends HttpServlet {
             System.out.println("ERROR SERVLET ITEM");
         }
         
-        response.sendRedirect("../cupomPagamento.jsp");
+        response.sendRedirect(request.getContextPath() + "/example/forms/cupomPagamento.jsp");
     }
 
     /**

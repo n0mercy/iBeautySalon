@@ -7,7 +7,7 @@
 <%@page import="java.sql.Connection"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.ResultSet"%>
-<%@page import="model.connection.Conexao"%>
+<%@page import="model.Connection.Conexao"%>
 <%@page import="model.Dao.DaoServico"%>
 <%@page import="model.Bean.BeanServico"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>

@@ -7,16 +7,22 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.RequestDispatcher;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.JOptionPane;
+import model.Bean.BeanEmpresa;
+import model.Bean.BeanOferece;
 import model.Bean.BeanServico;
+import model.Dao.DaoEmpresa;
+import model.Dao.DaoOferece;
 import model.Dao.DaoServico;
-import util.QRCodeUtil;
 
 /**
  *
@@ -78,19 +84,56 @@ public class ControllerServico extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         //processRequest(request, response);
-        BeanServico serv = new BeanServico();
+        BeanServico serv;
         DaoServico daoServ = new DaoServico();
         String urlRequest = request.getParameter("page");
+        String path = null;
         if (urlRequest.equals("cadServico")) {
+            serv = new BeanServico();
             String status = "ativo";
             serv.setServ_nome(request.getParameter("txtdesc"));
             serv.setServ_status(status);
-            daoServ.salvarServico(serv);
+            try {
+                daoServ.salvarServico(serv);
+            } catch (SQLException ex) {
+                Logger.getLogger(ControllerServico.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            path = "/example/forms/cadServico.jsp";
         }
-        //QRCodeUtil.generateQRCode(request.getParameter("txtdesc"));
-        response.sendRedirect(request.getContextPath() + "/example/forms/cadServico.jsp");
+        if (urlRequest.equals("adicionarServicos")) {
+            BeanOferece ofe;
+            String tmp[] = request.getParameterValues("preco_servico");
+            String paramsIDServico[] = request.getParameterValues("selected_services");
+            String paramsPrice[] = new String[tmp.length];
+            int count = 0;
 
-        //request.getRequestDispatcher("example/forms/cadServico.jsp").include(request, response);
+            for (String t : tmp) {
+                if (t != null && !t.trim().isEmpty()) {
+                    paramsPrice[count] = t;
+                    count++;
+                }
+            }
+
+            try {
+                BeanEmpresa emp = new DaoEmpresa().findByCnpj(request.getParameter("empresa_cnpj"));
+                for (int i = 0; i < paramsIDServico.length; i++) {
+                    serv = new BeanServico();
+                    serv = new DaoServico().findByCodigo(Integer.parseInt(paramsIDServico[i]));
+                    ofe = new BeanOferece();
+                    ofe.setOfe_emp_cnpj(emp);
+                    ofe.setOfe_serv_codigo(serv);
+                    ofe.setOfe_status("Ativo");
+                    ofe.setOfe_valor(Double.parseDouble(paramsPrice[i]));
+                    new DaoOferece().save(ofe);
+
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(ControllerServico.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            path = "/example/forms/adicionarServicos.jsp";
+        }
+        response.sendRedirect(request.getContextPath() + path);
     }
 
     /**

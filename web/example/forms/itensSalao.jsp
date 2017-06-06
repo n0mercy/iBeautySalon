@@ -89,12 +89,17 @@
             BeanFones fone = new BeanFones();
             List<BeanOferece> offers = new ArrayList<BeanOferece>();
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
+            String company = "";
             if (request.getParameter("sValue") != null) {
+                company = request.getParameter("sValue");
                 emp = new DaoEmpresa().findByCnpj(request.getParameter("sValue"));
                 usuario = new DaoUsuario().findByCodigo(emp.getEmp_usu_codigo().getUsu_codigo());
                 endereco = new DaoEndereco().findByCodigo(usuario.getUsu_end_codigo().getEnd_codigo());
                 fone = new DaoFones().findByUser(usuario.getUsu_codigo());
+            }
+            
+            if(request.getParameter("txtserv") != null){
+                
             }
 
         %>
@@ -121,11 +126,19 @@
                         Contato: <%= fone.getFon_fones()%><br>
                         Email: <%= usuario.getUsu_email()%>
                     </address>
-                </div>                                
+                </div>
+                     <div class="col-sm-4 invoice-col">        
+                    <address>
+                        <button type="button" onClick="location.href='listaSalaoAtendimento.jsp'" class="btn btn-primary pull-right" style="margin-right: 5px;">
+                            <i class="fa fa-download"></i> Lista Atendimento Salão
+                        </button>
+                    </address>
+                </div> 
             </div>  
             <div class="login-box-body">
                 <p class="login-box-msg">Preencha o serviço desejado</p>
-                <form method="GET" action="#">
+                <form method="POST" action="#">
+                    <input type="hidden" name="sValue" value="<%= company %>"/>
                     <div class="input-group input-group-sm">
                         <input type="text" name="txtserv" class="form-control">
                         <span class="input-group-btn">
@@ -152,7 +165,9 @@
                         </thead>
                         <tbody>
                             <%
-                                offers = new DaoOferece().findOffersByEmpresa(emp.getEmp_cnpj());
+                            String param = null;
+                            param = request.getParameter("txtserv") != null ? request.getParameter("txtserv") : "";
+                                offers = new DaoOferece().findOffersByEmpresa(emp.getEmp_cnpj(), param, true);
                                 for (BeanOferece o : offers) {
                             %>
                             <tr>

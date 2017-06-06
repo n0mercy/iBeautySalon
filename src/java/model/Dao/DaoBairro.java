@@ -16,15 +16,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Bean.BeanBairro;
-import model.connection.Conexao;
 
 /**
  *
  * @author VaiDiegoo
  */
-public class DaoBairro {
+public class DaoBairro extends BaseDao{
 
-    Connection con = Conexao.getConnection();
+    Connection con;
     PreparedStatement pstm;
     ResultSet rs;
     BeanBairro bairro;
@@ -32,7 +31,7 @@ public class DaoBairro {
 
     public BeanBairro findByDescricao(String desc) throws SQLException {
         try {
-            con = Conexao.getConnection();
+            con = getConnection();
             String sql = "select * from bairro where bai_nome = ?";
             pstm = con.prepareStatement(sql);
             pstm.setString(1, desc);
@@ -59,7 +58,7 @@ public class DaoBairro {
     
     public BeanBairro findByCodigo(int codigo) throws SQLException {
         try {
-            con = Conexao.getConnection();
+            con = getConnection();
             String sql = "select * from bairro where bai_codigo = ?";
             pstm = con.prepareStatement(sql);
             pstm.setInt(1, codigo);
@@ -103,7 +102,7 @@ public class DaoBairro {
 
     public List<BeanBairro> findAll() throws SQLException {
         try {
-            con = Conexao.getConnection();
+            con = getConnection();
             String sql = "select * from bairro";
             pstm = con.prepareStatement(sql);
             rs = pstm.executeQuery();
@@ -128,6 +127,7 @@ public class DaoBairro {
     }
     
     public void save(BeanBairro bairro) throws SQLException {
+        con = getConnection();
         try {
             if (bairro.getBai_codigo()== 0) {
                 pstm = con.prepareStatement("insert into bairro(bai_nome, bai_zona_cod) values (?,?)", Statement.RETURN_GENERATED_KEYS);

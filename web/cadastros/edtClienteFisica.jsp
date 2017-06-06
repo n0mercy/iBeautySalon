@@ -2,7 +2,7 @@
 <%@page import="model.Dao.DaoFones"%>
 <%@page import="model.Dao.DaoUsuario"%>
 <%@page import="model.Dao.DaoCliente"%>
-<%@page import="model.connection.Conexao"%>
+<%@page import="model.Connection.Conexao"%>
 <%@page import="model.Bean.BeanFones"%>
 <%@page import="model.Bean.BeanCep"%>
 <%@page import="model.Bean.BeanEndereco"%>

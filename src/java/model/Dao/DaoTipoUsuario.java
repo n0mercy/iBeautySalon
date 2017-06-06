@@ -13,22 +13,21 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Bean.BeanTipoUsuario;
-import model.connection.Conexao;
 
 /**
  *
  * @author VaiDiegoo
  */
-public class DaoTipoUsuario {
+public class DaoTipoUsuario extends BaseDao{
     
-    Connection con = model.connection.Conexao.getConnection();
+    Connection con;
     PreparedStatement pstm;
     ResultSet rs;
     BeanTipoUsuario tipo = new BeanTipoUsuario();
     
     public BeanTipoUsuario findByCodigo(int codigo) throws SQLException{      
-         try{           
-            con=Conexao.getConnection();          
+        con = getConnection();
+        try{                    
             String sql="select * from tipo_usuario where tipo_codigo = ?";            
             pstm = con.prepareStatement(sql);           
             pstm.setInt(1, codigo);
@@ -39,9 +38,17 @@ public class DaoTipoUsuario {
             System.out.println("Tipo não cadastrada" +erro.getMessage());            
             return null;
         } finally{
-             con.close();
-             rs.close();
-             pstm.close();
+             if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
+            }
          }       
     }        
      

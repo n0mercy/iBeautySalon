@@ -3,29 +3,29 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model.connection;
+package model.Connection;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
  *
- * @author VaiDiegoo
+ * @author n0mercy
  */
 public class Conexao {
     
     Statement stm;
-    public static Connection getConnection(){
-        Connection con=null;
+    java.sql.Connection con;
+    public static String user = "root";
+    public static String pwd = "cavalo14";
+    
+    public static java.sql.Connection getConnection(){
+        java.sql.Connection con=null;
         try{
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             String url="jdbc:mysql://localhost:3306/ibeautysalon";
-            String login="root";
-            String senha="cavalo14";
-            con=DriverManager.getConnection(url, login, senha);
-           // System.out.println("conectado");
+            con = DriverManager.getConnection(url, user, pwd);
         }catch(ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException erro){
             System.out.println("Erro de conexão BD" + erro.getMessage() );
             

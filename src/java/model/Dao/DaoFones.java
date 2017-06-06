@@ -13,27 +13,25 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Bean.BeanCep;
 import model.Bean.BeanFones;
 import model.Bean.BeanUsuario;
-import model.connection.Conexao;
 
 /**
  *
  * @author VaiDiegoo
  */
-public class DaoFones {
-    Connection con = model.connection.Conexao.getConnection();
+public class DaoFones extends BaseDao{
+    Connection con;
     PreparedStatement pstm;
     ResultSet rs;
     
     BeanFones fone = new BeanFones();
-    BeanUsuario user = new BeanUsuario();
+    BeanUsuario usuario = new BeanUsuario();
     DaoUsuario userDao = new DaoUsuario();
     
     public BeanFones findByUser(int codigo) throws SQLException{      
-         try{                              
-            con=Conexao.getConnection();          
+        con = getConnection();
+        try{        
             StringBuilder sb = new StringBuilder();
             sb.append("select * from fones where fone_usu_codigo = ?");            
             pstm = con.prepareStatement(sb.toString());           
@@ -45,9 +43,17 @@ public class DaoFones {
             System.out.println("Fone não encontrado" +erro.getMessage());            
             return null;
         }finally{
-             con.close();
-             rs.close();
-             pstm.close();
+             if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
+            }
          }        
     }
      
@@ -55,8 +61,8 @@ public class DaoFones {
         try {
             while (r.next()) {
                 fone.setFon_fones(r.getString("fon_fones"));
-                user = userDao.findByCodigo(r.getInt("fone_usu_codigo"));
-                fone.setFon_usu_cod(user);
+                usuario = userDao.findByCodigo(r.getInt("fone_usu_codigo"));
+                fone.setFon_usu_cod(usuario);
             }
             return fone;
         } catch (SQLException ex) {
@@ -66,7 +72,8 @@ public class DaoFones {
      }
      
      public void save(BeanFones fone, boolean update) throws SQLException {
-        try {
+        con = getConnection();
+         try {
             if (!update) {
                 System.out.println("INSERT FONE");
                 pstm = con.prepareStatement("insert into fones(fon_fones, fone_usu_codigo) values (?,?)", Statement.RETURN_GENERATED_KEYS);

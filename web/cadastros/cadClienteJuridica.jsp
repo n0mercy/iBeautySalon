@@ -17,7 +17,6 @@
 <%@page import="java.sql.Connection"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.ResultSet"%>
-<%@page import="model.connection.Conexao"%>
 <%@page import="model.Dao.DaoEmpresa"%>
 <%@page import="model.Bean.BeanEmpresa"%>
 <%@ page contentType="text/html; charset=utf-8" language="java" import="java.sql.*" errorPage="" %>
@@ -106,7 +105,7 @@
                                 <div class="wrapper">
                                     <!-- /.example-modal -->
                                     <form action="../ControllerCliente" id="form-main" name="form1" method="POST" role="form" data-toggle="validator">
-                                        <input type="hidden" value="cadClienteJuridico" name="save"/>
+                                        <input type="hidden" value="cadClienteJuridica" name="save"/>
                                         <div class="example-modal ">
                                             <div class="modal">           
                                                 <div class="modal-dialog">

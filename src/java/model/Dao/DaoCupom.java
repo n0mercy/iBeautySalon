@@ -16,22 +16,21 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Bean.BeanCupom;
-import model.Bean.BeanZona;
-import model.connection.Conexao;
 
 /**
  *
  * @author VaiDiegoo
  */
-public class DaoCupom {
+public class DaoCupom extends BaseDao{
     
-    Connection con = model.connection.Conexao.getConnection();
+    Connection con;
     PreparedStatement pstm;
     ResultSet rs;
     List<BeanCupom> list;
     BeanCupom cupom = new BeanCupom();
     
     public void save(BeanCupom cupom) throws SQLException {
+        con = getConnection();
         try {
             if (cupom.getCupom_codigo() == 0) {
                 System.out.println("INSERT CUPOM");
@@ -82,11 +81,38 @@ public class DaoCupom {
     }
     
     public BeanCupom findByCodigo(int codigo) throws SQLException {
-        try {
-            con = Conexao.getConnection();
+        con = getConnection();
+        try {            
             String sql = "select * from cupom where cupom_codigo = ?";
             pstm = con.prepareStatement(sql);
             pstm.setInt(1, codigo);
+            rs = pstm.executeQuery();
+            cupom = createCupom(rs);
+            return cupom;
+        } catch (SQLException | HeadlessException erro) {
+            System.out.println("Cupom não encontrado" + erro.getMessage());
+            return null;
+        } finally {
+            if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
+            }
+        }
+    }
+    
+    public BeanCupom findByCliente(String cpf) throws SQLException {
+        con = getConnection();
+        try {            
+            String sql = "select * from cupom where cupom_clicpf = ? and cupom_status = 'pendente'";
+            pstm = con.prepareStatement(sql);
+            pstm.setString(1, cpf);
             rs = pstm.executeQuery();
             cupom = createCupom(rs);
             return cupom;

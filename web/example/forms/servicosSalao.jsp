@@ -2,7 +2,7 @@
 <%@page import="java.sql.Connection"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.ResultSet"%>
-<%@page import="model.connection.Conexao"%>
+<%@page import="model.Connection.Conexao"%>
 <%@page import="model.Dao.DaoServico"%>
 <%@page import="model.Bean.BeanServico"%>
 <%@ page contentType="text/html; charset=utf-8" language="java" import="java.sql.*" errorPage="" %>
@@ -48,6 +48,18 @@
                                                 background: transparent !important;
                                             }
                                         </style>
+
+                                        <!-- ./wrapper -->
+                                        <!-- jQuery 2.2.3 -->
+                                        <script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
+                                        <!-- Bootstrap 3.3.6 -->
+                                        <script src="../../bootstrap/js/bootstrap.min.js"></script>
+                                        <!-- FastClick -->
+                                        <script src="../../plugins/fastclick/fastclick.js"></script>
+                                        <!-- AdminLTE App -->
+                                        <script src="../../dist/js/app.min.js"></script>
+                                        <!-- AdminLTE for demo purposes -->
+                                        <script src="../../dist/js/demo.js"></script>
                                         </head>
 
                                         <body  >
@@ -119,7 +131,7 @@
                                                                                                     ResultSet rs;
                                                                                                     Statement stm;
                                                                                                     PreparedStatement pstm;
-                                                                                                    String sql = "select *from servico where serv_status='ativo';";
+                                                                                                    String sql = "select *from servico where serv_status = 'ativo';";
                                                                                                     pstm = con.prepareStatement(sql);
                                                                                                     rs = pstm.executeQuery(sql);
                                                                                                     rs.first();
@@ -159,16 +171,6 @@
                                                                                                             </div>
                                                                                                             <!-- /.modal -->
                                                                                                             </div>
-                                                                                                            <!-- ./wrapper -->
-                                                                                                            <!-- jQuery 2.2.3 -->
-                                                                                                            <script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
-                                                                                                            <!-- Bootstrap 3.3.6 -->
-                                                                                                            <script src="../../bootstrap/js/bootstrap.min.js"></script>
-                                                                                                            <!-- FastClick -->
-                                                                                                            <script src="../../plugins/fastclick/fastclick.js"></script>
-                                                                                                            <!-- AdminLTE App -->
-                                                                                                            <script src="../../dist/js/app.min.js"></script>
-                                                                                                            <!-- AdminLTE for demo purposes -->
-                                                                                                            <script src="../../dist/js/demo.js"></script>
+
                                                                                                             </body>
                                                                                                             </html>

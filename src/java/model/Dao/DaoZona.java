@@ -15,25 +15,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Bean.BeanBairro;
 import model.Bean.BeanZona;
-import model.connection.Conexao;
 
 /**
  *
  * @author VaiDiegoo
  */
-public class DaoZona {
+public class DaoZona extends BaseDao {
 
-    Connection con = model.connection.Conexao.getConnection();
+    Connection con;
     PreparedStatement pstm;
     ResultSet rs;
     BeanZona zona;
     List<BeanZona> list;
 
     public BeanZona findByDescricao(String desc) throws SQLException {
+        con = getConnection();
         try {
-            con = Conexao.getConnection();
             String sql = "select * from zona where zona_nome = ?";
             pstm = con.prepareStatement(sql);
             pstm.setString(1, desc);
@@ -59,8 +57,8 @@ public class DaoZona {
     }
 
     public BeanZona findByCodigo(int codigo) throws SQLException {
+        con = getConnection();
         try {
-            con = Conexao.getConnection();
             String sql = "select * from zona where zona_cod = ?";
             pstm = con.prepareStatement(sql);
             pstm.setInt(1, codigo);
@@ -102,8 +100,8 @@ public class DaoZona {
     }
 
     public List<BeanZona> findAll() throws SQLException {
+        con = getConnection();
         try {
-            con = Conexao.getConnection();
             String sql = "select * from zona";
             pstm = con.prepareStatement(sql);
             rs = pstm.executeQuery();
@@ -126,8 +124,9 @@ public class DaoZona {
             }
         }
     }
-    
+
     public void save(BeanZona zona) throws SQLException {
+        con = getConnection();
         try {
             if (zona.getZona_cod() == 0) {
                 pstm = con.prepareStatement("insert into zona(zona_nome) values (?)", Statement.RETURN_GENERATED_KEYS);
@@ -142,7 +141,7 @@ public class DaoZona {
             }
 
             int count = pstm.executeUpdate();
-            
+
             if (count == 0) {
                 throw new SQLException("Erro ao inserir a zona");
             }
@@ -157,6 +156,10 @@ public class DaoZona {
 
             if (con != null) {
                 con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
             }
 
         }

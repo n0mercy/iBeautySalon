@@ -14,22 +14,21 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Bean.BeanCep;
-import model.connection.Conexao;
 
 /**
  *
  * @author VaiDiegoo
  */
-public class DaoCep {
+public class DaoCep extends BaseDao{
     
-    Connection con = model.connection.Conexao.getConnection();
+    Connection con;
     PreparedStatement pstm;
     ResultSet rs;
     BeanCep cep = new BeanCep();
     
     public BeanCep findByCodigo(String codigo) throws SQLException{      
          try{           
-            con=Conexao.getConnection();          
+            con = getConnection();          
             String sql="select * from cep where cep_cep = ?";            
             pstm = con.prepareStatement(sql);           
             pstm.setString(1, codigo);
@@ -61,7 +60,8 @@ public class DaoCep {
      }
      
      public void save(BeanCep cep, boolean up) throws SQLException {
-        try {
+        con = getConnection();
+         try {
             if (!up) {
                 pstm = con.prepareStatement("insert into cep(cep_cep,cep_rua,cep_bai_codigo) values (?,?,?)", Statement.RETURN_GENERATED_KEYS);
             } else {

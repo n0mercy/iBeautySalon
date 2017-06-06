@@ -1,7 +1,7 @@
 package model.Connection;
 
 
-import model.connection.Conexao;
+import model.Dao.BaseDao;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,7 +16,7 @@ import java.sql.Connection;
 public class Teste {
  
     public static void main(String args[]){
-        Connection c = Conexao.getConnection();
+        Connection c = BaseDao.getConnection();
         System.out.println(c);
         
     }

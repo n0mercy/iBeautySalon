@@ -4,6 +4,18 @@
     Author     : VaiDiegoo
 --%>
 
+<%@page import="java.util.Date"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="model.Dao.DaoItemServico"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="model.Dao.DaoCupom"%>
+<%@page import="model.Dao.DaoCliente"%>
+<%@page import="java.util.List"%>
+<%@page import="model.Bean.BeanItemServico"%>
+<%@page import="model.Bean.BeanCupom"%>
+<%@page import="model.Bean.BeanCliente"%>
+<%@page import="model.Dao.DaoUsuario"%>
+<%@page import="model.Bean.BeanUsuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -33,14 +45,48 @@
         <![endif]-->
     </head>
     <body class="hold-transition skin-blue sidebar-mini">
+        <%
+
+            BeanUsuario usuario;
+            BeanCliente cliente;
+            BeanCupom cupom = new BeanCupom();
+            int qrcode = 0;
+            BeanItemServico item;
+            List<BeanItemServico> listItem = new ArrayList<BeanItemServico>();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            double total = 0;
+
+            if (request.getSession().getAttribute("user") != null) {
+                System.out.println("Usuário na session = true");
+                String user = request.getSession().getAttribute("user").toString();
+                usuario = new DaoUsuario().findByUserSession(user);
+                cliente = new DaoCliente().findByUser(usuario.getUsu_codigo());
+                cupom = new DaoCupom().findByCliente(cliente.getCli_cpf());
+                qrcode = cupom.getCupom_codigo();
+                listItem = new DaoItemServico().findItensByCupom(cupom.getCupom_codigo());
+            } else {
+                System.out.println("Usuário na session = false");
+            }
+
+            if (request.getParameter("remove") != null) {
+                int item_cod = Integer.parseInt(request.getParameter("remove"));
+                new DaoItemServico().remove(item_cod);
+                String user = request.getSession().getAttribute("user").toString();
+                usuario = new DaoUsuario().findByUserSession(user);
+                cliente = new DaoCliente().findByUser(usuario.getUsu_codigo());
+                cupom = new DaoCupom().findByCliente(cliente.getCli_cpf());
+                qrcode = cupom.getCupom_codigo();
+                listItem = new DaoItemServico().findItensByCupom(cupom.getCupom_codigo());
+            }
+        %>
         <!-- Main content -->
         <section class="invoice">
             <!-- title row -->
             <div class="row">
                 <div class="col-xs-12">
                     <h2 class="page-header">
-                        <i class="fa fa-globe"></i> IBeautySalon 
-                        <small class="pull-right">Email logado</small>
+                        <i class="fa fa-globe"></i> Finalizando Sua Compra :D 
+                        <small class="pull-right"><strong>Usuário:</strong> ${user}</small>
                     </h2>
                 </div>
                 <!-- /.col -->
@@ -48,42 +94,37 @@
             <!-- Table row -->
             <div class="row">
                 <div class="col-xs-12 table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Cod</th>
-                                <th>Descrição</th>              
-                                <th>Valor</th>
-                                <th>Remover Serviço</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Chapinha</td>
-                                <td>$64.50</td>  
-                                <td><input type="submit" value="Remover" name="Remover" class="btn btn-default btn-flat btn btn-danger pull-left" /></td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Pedicure</td>
-                                <td>$20.00</td> 
-                                <td><input type="submit" value="Remover" name="Remover" class="btn btn-default btn-flat btn btn-danger pull-left" /></td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Escova Simples</td>
-                                <td>$35.00</td> 
-                                <td><input type="submit" value="Remover" name="Remover" class="btn btn-default btn-flat btn btn-danger pull-left" /></td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Manicure</td>
-                                <td>$15.00</td> 
-                                <td><input type="submit" value="Remover" name="Remover" class="btn btn-default btn-flat btn btn-danger pull-left" /></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <form method="POST" action="">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Cod</th>
+                                    <th>Descrição</th>              
+                                    <th>Valor</th>
+                                    <th>Remover Serviço</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                <%
+                                    for (BeanItemServico i : listItem) {
+                                        total += i.getItemserv_ofe_cod().getOfe_valor();
+                                %>
+                                <tr>
+                                    <td><%= i.getItemserv_codigo()%></td>
+                                    <td><%= i.getItemserv_ofe_cod().getOfe_serv_codigo().getServ_nome()%></td>
+                                    <td><%= i.getItemserv_ofe_cod().getOfe_valor()%></td>  
+                                    <td><button type="submit" value="<%= i.getItemserv_codigo()%>" name="remove" class="btn btn-default btn-flat btn btn-danger pull-left" />Remover</td>
+                                </tr>
+                                <%
+                                    }
+                                %>
+
+                            </tbody>
+
+                        </table>
+                    </form>
                 </div>
                 <!-- /.col -->
             </div>
@@ -97,7 +138,6 @@
                     <img src="../../dist/img/credit/mastercard.png" alt="Mastercard">
                     <img src="../../dist/img/credit/american-express.png" alt="American Express">
                     <img src="../../dist/img/credit/paypal2.png" alt="Paypal">
-
                     <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
                         São aceitos estes tipos de pagamentos no nosso site, qualquer dúvida pode-se entrar em contato com 
                         o nosso suporte técnico para sanar as respectivas dúvidas.              
@@ -105,19 +145,23 @@
                 </div>
                 <!-- /.col -->
                 <div class="col-xs-6">
-                    <p class="lead">Data de Hoje x/xx/xxxx</p>
+                    <p class="lead">Data de Hoje <%= sdf.format(new Date())%></p>
                     <br>
                     <div class="table-responsive">
                         <table class="table">
+
                             <tr>
-                                <th style="width:50%">Valor Total:</th>
-                                <td>$250.30</td>
-                            </tr>              
-                            <tr>                
-                            <label>Bairro</label>
-                            <select name="pagamento" class="form-control select2" style="width: 100%;">                                                                                        
-                                <option value="Pagamentos" selected="selected">Crédito</option>                                                                                                       
-                            </select>
+                                <td>
+                                    <label>Tipo de Pagamento</label>
+                                    <select name="pagamento" class="form-control select2" style="width: 100%;">                                                                                        
+                                        <option value="Pagamentos" selected="selected">Crédito</option>                                                                                                       
+                                    </select>
+                                    <br>
+                                    <label>Valor Total</label>: R$<%= total%>
+                                </td>
+                                <td> 
+                                    <!--<img src="../../images/<%= qrcode %>.png" title="QRCode para identificação" class="pull-right"/>-->
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -126,15 +170,19 @@
             </div>
             <!-- /.row -->
             <!-- this row will not appear when printing -->
-            <div class="row no-print">
-                <div class="col-xs-12">          
-                    <button type="button" class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Finalizar Pagamento
-                    </button>
-                    <button type="button" class="btn btn-danger pull-right" style="margin-right: 5px;">
-                        <i class="fa fa-download"></i> Cancelar Cupom
-                    </button>
+            <form method="POST" action="../../ControllerPagamento">
+                <input type="hidden" name="cupom_id" value="<%= cupom.getCupom_codigo() %>"/>
+                <input type="hidden" name="page" value="cupomPagamento"/>
+                <div class="row no-print">
+                    <div class="col-xs-12">          
+                        <button type="submit" name="submit" value="confirm" class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Finalizar Pagamento
+                        </button>
+                        <button type="submit" name="submit" value="cancell" class="btn btn-danger pull-right" style="margin-right: 5px;">
+                            <i class="fa fa-download"></i> Cancelar Cupom
+                        </button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </section>
         <!-- /.content -->
         <div class="clearfix"></div>

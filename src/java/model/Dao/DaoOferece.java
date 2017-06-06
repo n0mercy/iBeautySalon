@@ -13,38 +13,84 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import model.Bean.BeanCep;
 import model.Bean.BeanOferece;
-import model.Bean.BeanZona;
-import model.connection.Conexao;
 
 /**
  *
  * @author VaiDiegoo
  */
-public class DaoOferece {
+public class DaoOferece extends BaseDao{
 
-    Connection con = model.connection.Conexao.getConnection();
+    Connection con;
     PreparedStatement pstm;
     ResultSet rs;
     List<BeanOferece> offers = new ArrayList<BeanOferece>();
     BeanOferece offer = new BeanOferece();
 
-    public List<BeanOferece> findOffersByEmpresa(String cnpj) {
-        con = Conexao.getConnection();
+    public List<BeanOferece> findOffersByEmpresa(String cnpj, String descricao, boolean all) throws SQLException {
+        con = getConnection();
         StringBuilder sb = new StringBuilder();
         sb.append("select * from servico c ");
         sb.append("inner join oferece o ON o.ofe_serv_codigo = c.serv_codigo ");
         sb.append("inner join empresa_usuario e ON e.emp_cnpj = o.ofe_emp_cnpj ");
-        sb.append("where e.emp_cnpj = ?");
+        sb.append("inner join servico s on s.serv_codigo = o.ofe_serv_codigo ");
+        sb.append("where e.emp_cnpj = ? ");
+        if(all)
+            sb.append("and o.ofe_status = 'Ativo' ");
+        
+        if(descricao != null && !descricao.trim().isEmpty())
+            sb.append("and s.serv_desc like ?");
+        
         try {
             pstm = con.prepareStatement(sb.toString());
             pstm.setString(1, cnpj);
+            if(descricao != null && !descricao.trim().isEmpty())
+                pstm.setString(2, "%"+descricao+"%");
+                
             rs = pstm.executeQuery();
             //Enquanto existir dados no banco de dados, faça
             offer = createOferece(rs);
         } catch (Exception e) {
             System.out.println("Erro ao listar servicos" + e);
+        }finally{
+            if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
+            }
+        }
+        return offers;
+    }
+    
+    public List<BeanOferece> findAllServicosOferecidos() throws SQLException {
+        con = getConnection();
+        StringBuilder sb = new StringBuilder();
+        sb.append("select * from oferece o ");       
+        
+        try {
+            pstm = con.prepareStatement(sb.toString());
+            rs = pstm.executeQuery();
+            offer = createOferece(rs);
+        } catch (Exception e) {
+            System.out.println("Erro ao listar servicos ofertados" + e);
+        }finally{
+            if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
+            }
         }
         return offers;
     }
@@ -64,6 +110,7 @@ public class DaoOferece {
     }
     
     public void save(BeanOferece ofe) throws SQLException {
+        con = getConnection();
         try {
             if (ofe.getOfe_codigo() == 0) {
                 pstm = con.prepareStatement("insert into oferece(ofe_status, ofe_valor, ofe_emp_cnpj, ofe_serv_codigo) values (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -86,6 +133,10 @@ public class DaoOferece {
                 throw new SQLException("Erro ao inserir o oferta");
             }
             
+            if (ofe.getOfe_codigo() == 0) {
+                ofe.setOfe_codigo(getGeneratedId(pstm));
+            }
+            
         } finally {
             if (pstm != null) {
                 pstm.close();
@@ -101,9 +152,18 @@ public class DaoOferece {
         }
     }
     
+    public static int getGeneratedId(Statement stmt) throws SQLException {
+        ResultSet rs = stmt.getGeneratedKeys();
+        if (rs.next()) {
+            int id = rs.getInt(1);
+            return id;
+        }
+        return 0;
+    }
+    
     public BeanOferece findByCodigo(int codigo) throws SQLException {
+        con = getConnection();
         try {
-            con = Conexao.getConnection();
             String sql = "select * from oferece where ofe_codigo = ?";
             pstm = con.prepareStatement(sql);
             pstm.setInt(1, codigo);

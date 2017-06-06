@@ -1,8 +1,15 @@
+<%@page import="model.Dao.DaoCliente"%>
+<%@page import="model.Bean.BeanCliente"%>
+<%@page import="model.Bean.BeanEndereco"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="model.Dao.DaoUsuario"%>
+<%@page import="model.Bean.BeanUsuario"%>
 <%@page import="java.sql.Statement"%>
 <%@page import="java.sql.Connection"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.ResultSet"%>
-<%@page import="model.connection.Conexao"%>
+<%@page import="model.Connection.Conexao"%>
 <%@page import="model.Dao.DaoEmpresa"%>
 <%@page import="model.Bean.BeanEmpresa"%>
 <%@ page contentType="text/html; charset=utf-8" language="java" import="java.sql.*" errorPage="" %>
@@ -80,40 +87,28 @@
                                                 <tbody>
                                                     <%
                                                         BeanEmpresa emp = new BeanEmpresa();
-                                                        DaoEmpresa daoemp = new DaoEmpresa();
-                                                        Connection con = Conexao.getConnection();
-                                                        Integer codEmp;
+                                                        List<BeanEmpresa> listEmpresa = new ArrayList<BeanEmpresa>();
+                                                        BeanCliente cliente = new BeanCliente();
+                                                        BeanEndereco endereco = new BeanEndereco();
                                                         String cep = null;
-                                                        ResultSet rs;
-                                                        Statement stm;
-                                                        String sql = null;
-                                                        PreparedStatement pstm;
-                                                        //Se for diferente de nulo e for digitado algo no campo de busca
-                                                        if (request.getParameter("txtcep") != null && !request.getParameter("txtcep").trim().isEmpty()) {
-                                                            cep = request.getParameter("txtcep");
-                                                            sql = "select * from empresa_usuario inner join "
-                                                                    + "usuario on emp_usu_codigo = usu_codigo left join "
-                                                                    + "fones on fone_usu_codigo = usu_codigo inner join "
-                                                                    + "tipo_usuario on usu_tipo_codigo= tipo_codigo inner join "
-                                                                    + "endereco on usu_end_codigo = end_codigo inner join "
-                                                                    + "cep on end_cep= cep_cep inner join "
-                                                                    + "bairro on cep_bai_codigo=bai_codigo inner join "
-                                                                    + "zona on bai_zona_cod=zona_cod "
-                                                                    + "where usu_status='Ativo' and cep.cep_cep = '" + cep + "'";
-                                                        } else {
-                                                            sql = "select * from empresa_usuario inner join "
-                                                                    + "usuario on emp_usu_codigo = usu_codigo left join "
-                                                                    + "fones on fone_usu_codigo = usu_codigo inner join "
-                                                                    + "tipo_usuario on usu_tipo_codigo= tipo_codigo inner join "
-                                                                    + "endereco on usu_end_codigo = end_codigo inner join "
-                                                                    + "cep on end_cep= cep_cep inner join "
-                                                                    + "bairro on cep_bai_codigo=bai_codigo inner join "
-                                                                    + "zona on bai_zona_cod=zona_cod where usu_status='Ativo';";
+                                                        if(request.getSession().getAttribute("user") != null){
+                                                            String user = request.getSession().getAttribute("user").toString();
+                                                            cliente = new DaoCliente().findByCupomPendente(user);
                                                         }
-                                                        pstm = con.prepareStatement(sql);
-                                                        rs = pstm.executeQuery(sql);
-                                                        rs.first();
-                                                        if (rs.first() == false) {
+                                                        //Se for diferente de nulo e for digitado algo no campo de busca
+                                                        if (request.getParameter("txtcep") != null && !request.getParameter("txtcep").trim().isEmpty()){
+                                                            cep = request.getParameter("txtcep");
+                                                            listEmpresa = new DaoEmpresa().findEmpresasByCEP(cep);
+                                                        }else{
+                                                            if(cliente.getCli_cpf() != null){
+                                                                System.out.println("CPF pendente not null: "+cliente.getCli_cpf());
+                                                                listEmpresa = new DaoEmpresa().findByCpfStatusPendente(cliente.getCli_cpf());
+                                                            }else{
+                                                                System.out.println("CPF pendente Nulo");
+                                                                listEmpresa = new DaoEmpresa().findAllEmpresas();
+                                                            }
+                                                        }
+                                                        if (listEmpresa.size() == 0) {
                                                     %>
                                                     <tr>
                                                         <td colspan="6" align="center">
@@ -123,25 +118,25 @@
                                                     </tr>
                                                     <%
                                                     } else {
-                                                        do {
+                                                        for(BeanEmpresa e: listEmpresa){
                                                     %>
                                                     <form style="display: hidden" action="../forms/cadClienteJuridica.jsp" method="POST" id="form">
                                                         <tr>                 
-                                                            <td ><%=rs.getString("emp_razao")%></td>
-                                                            <td ><%=rs.getString("cep_cep")%></td>
-                                                            <td ><%=rs.getString("cep_rua")%></td>
-                                                            <td ><%=rs.getString("bai_nome")%></td>
-                                                            <td ><%=rs.getString("end_ref")%></td>
+                                                            <td ><%= e.getEmp_razao() %></td>
+                                                            <td ><%= e.getEmp_usu_codigo().getUsu_end_codigo().getEnd_cep().getCep_cep() %></td>
+                                                            <td ><%= e.getEmp_usu_codigo().getUsu_end_codigo().getEnd_cep().getRua() %></td>
+                                                            <td ><%= e.getEmp_usu_codigo().getUsu_end_codigo().getEnd_cep().getCep_bai_codigo().getBai_nome() %></td>
+                                                            <td ><%= e.getEmp_usu_codigo().getUsu_end_codigo().getEnd_ref() %></td>
                                                             <td>
                                                                 <span class="input-group-btn">
                                                                     <!-- /bloco desativado -->
-                                                                    <button type="button" name="btn_edit" class="btn btn-danger btn-sm" onClick="href:location = '../forms/itensSalao.jsp?sValue=<%=rs.getString("emp_cnpj")%>'">Alterar</button>                                                                                        
+                                                                    <button type="button" name="btn_edit" class="btn btn-danger btn-sm" onClick="href:location = '../forms/itensSalao.jsp?sValue=<%= e.getEmp_cnpj() %>'">Selecionar</button>                                                                                        
                                                                 </span>
                                                             </td>
                                                         </tr> 
                                                     </form>
                                                     <%
-                                                            } while (rs.next());
+                                                            }
                                                         }%>                                               
                                                 </tbody>               
                                             </table>

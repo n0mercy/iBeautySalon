@@ -16,21 +16,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Bean.BeanCliente;
 import model.Bean.BeanEmpresa;
-import model.connection.Conexao;
 
 /**
  *
  * @author VaiDiegoo
  */
-public class DaoCliente {
+public class DaoCliente extends BaseDao {
 
-    Connection con = model.connection.Conexao.getConnection();
+    Connection con;
     PreparedStatement pstm;
     ResultSet rs;
     BeanCliente cliente = new BeanCliente();
 
     public void save(BeanCliente c, boolean update) throws SQLException {
-        con = Conexao.getConnection();
+        con = getConnection();
         try {
             if (!update) {
                 System.out.println("INSERT CLIENTE");
@@ -82,10 +81,11 @@ public class DaoCliente {
         }
         return null;
     }
-    
+
     public BeanCliente findByCpf(String cpf) throws SQLException {
+        con = getConnection();
         try {
-            con = Conexao.getConnection();
+
             String sql = "select * from cliente_usuario where cli_cpf = ?";
             pstm = con.prepareStatement(sql);
             pstm.setString(1, cpf);
@@ -96,15 +96,55 @@ public class DaoCliente {
             System.out.println("Cliente não encontrado" + erro.getMessage());
             return null;
         } finally {
-            con.close();
-            rs.close();
-            pstm.close();
+            if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
+            }
         }
     }
     
-    public BeanCliente findByUser(int user_id) throws SQLException {
+    public BeanCliente findByCupomPendente(String email) throws SQLException {
+        con = getConnection();
         try {
-            con = Conexao.getConnection();
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT * FROM cliente_usuario c ");
+            sb.append("INNER JOIN usuario u ON u.usu_codigo = c.cli_usu_codigo ");
+            sb.append("INNER JOIN cupom cc ON cc.cupom_clicpf = c.cli_cpf ");
+            sb.append("where cc.cupom_status = 'pendente' and usu_email =  ?");
+            pstm = con.prepareStatement(sb.toString());
+            pstm.setString(1, email);
+            rs = pstm.executeQuery();
+            cliente = createCliente(rs);
+            return cliente;
+        } catch (SQLException | HeadlessException erro) {
+            System.out.println("Cliente não encontrado" + erro.getMessage());
+            return null;
+        } finally {
+            if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
+            }
+        }
+    }
+
+    public BeanCliente findByUser(int user_id) throws SQLException {
+        con = getConnection();
+        try {
             String sql = "select * from cliente_usuario where cli_usu_codigo = ?";
             pstm = con.prepareStatement(sql);
             pstm.setInt(1, user_id);
@@ -115,9 +155,47 @@ public class DaoCliente {
             System.out.println("Cliente não encontrado" + erro.getMessage());
             return null;
         } finally {
-            con.close();
-            rs.close();
-            pstm.close();
+            if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
+            }
+        }
+    }
+    
+    public BeanCliente findClienteBySession(String email) throws SQLException {
+        con = getConnection();
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("select * from cliente_usuario ");
+            sb.append("inner join usuario on usu_codigo = cli_usu_codigo ");
+            sb.append("where usu_email = ?");
+            pstm = con.prepareStatement(sb.toString());
+            pstm.setString(1, email);
+            rs = pstm.executeQuery();
+            cliente = createCliente(rs);
+            return cliente;
+        } catch (SQLException | HeadlessException erro) {
+            System.out.println("Cliente não encontrado" + erro.getMessage());
+            return null;
+        } finally {
+            if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
+            }
         }
     }
 

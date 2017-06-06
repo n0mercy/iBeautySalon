@@ -9,6 +9,6 @@ package model.Dao;
  *
  * @author VaiDiegoo
  */
-public class DaoAvalia {
+public class DaoAvalia extends BaseDao{
     
 }

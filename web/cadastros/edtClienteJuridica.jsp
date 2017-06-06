@@ -17,7 +17,7 @@
 <%@page import="java.sql.Connection"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.ResultSet"%>
-<%@page import="model.connection.Conexao"%>
+<%@page import="model.Connection.Conexao"%>
 <%@page import="model.Dao.DaoEmpresa"%>
 <%@page import="model.Bean.BeanEmpresa"%>
 <%@ page contentType="text/html; charset=utf-8" language="java" import="java.sql.*" errorPage="" %>
@@ -145,11 +145,9 @@
                                                     if (request.getParameter("cep") != null) {
                                                         cep = new DaoCep().findByCodigo(request.getParameter("cep"));
                                                         end = new DaoEndereco().findByCep(cep.getCep_cep());
-                                                        System.out.println(request.getParameter("cep") + ": 1");
                                                     } else {
                                                         cep = new DaoCep().findByCodigo(rs.getString("end_cep"));
                                                         end = new DaoEndereco().findByCep(rs.getString("end_cep"));
-                                                        System.out.println(request.getParameter("cep") + ": 2");
                                                     }
 
                                                 } while (rs.next());
