@@ -150,6 +150,7 @@
                                                                                         if (role == 3 && status.equals("Ativo")) {
                                                                                     %>
                                                                                     <li><a href="#" ><i class="fa fa-circle-o"></i> Consultar Vendidos</a></li>                       
+                                                                                    <li><a href="example/pages/checkinCupom.jsp" target="mainFrame"><i class="fa fa-circle-o"></i> Check-in Cupons</a></li>
                                                                                         <%
                                                                                             }
                                                                                             if (role == 2) {

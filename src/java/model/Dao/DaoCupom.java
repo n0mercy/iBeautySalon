@@ -107,17 +107,58 @@ public class DaoCupom extends BaseDao{
         }
     }
     
-    public List<BeanCupom> findByEmpStatusAtendimento(String cnpj) throws SQLException {
+    public List<BeanCupom> findByEmpStatus(String cnpj, String status) throws SQLException {
         con = getConnection();
         try {            
             StringBuilder sb = new StringBuilder();
             sb.append("SELECT * FROM cupom ");
             sb.append("INNER JOIN itemservico ON itemserv_cupom_codigo = cupom_codigo ");
             sb.append("INNER JOIN oferece ON ofe_codigo = itemserv_ofe_codigo ");
-            sb.append("WHERE cupom_status = 'em atendimento' and ofe_emp_cnpj = ? ");
+            sb.append("WHERE cupom_status like ? ");                    
+            sb.append("and ofe_emp_cnpj = ? "); 
+            sb.append("group by cupom_codigo");
+            pstm = con.prepareStatement(sb.toString());
+            
+            if(status.equalsIgnoreCase("em atendimento"))
+                status = "em";
+            
+            pstm.setString(1, '%'+status+'%');
+            pstm.setString(2, cnpj);
+            rs = pstm.executeQuery();
+            cupom = createCupom(rs);
+            return list;
+        } catch (SQLException | HeadlessException erro) {
+            System.out.println("Cupom não encontrado" + erro.getMessage());
+            return null;
+        } finally {
+            if (pstm != null) {
+                pstm.close();
+            }
+
+            if (con != null) {
+                con.close();
+            }
+
+            if (rs != null) {
+                rs.close();
+            }
+        }
+    }
+    
+    public List<BeanCupom> findByEmpStatusCheck(String cnpj, String cupomID) throws SQLException {
+        con = getConnection();
+        try {            
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT * FROM cupom ");
+            sb.append("INNER JOIN itemservico ON itemserv_cupom_codigo = cupom_codigo ");
+            sb.append("INNER JOIN oferece ON ofe_codigo = itemserv_ofe_codigo ");
+            sb.append("WHERE ofe_emp_cnpj = ? ");
+            sb.append("AND cupom_codigo = ? ");
+            sb.append("AND cupom_status <> 'finalizado' ");
             sb.append("group by cupom_codigo");
             pstm = con.prepareStatement(sb.toString());
             pstm.setString(1, cnpj);
+            pstm.setString(2, cupomID);
             rs = pstm.executeQuery();
             cupom = createCupom(rs);
             return list;

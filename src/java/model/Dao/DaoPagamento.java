@@ -85,7 +85,6 @@ public class DaoPagamento extends BaseDao{
         try {
             list = new ArrayList<>();
             while (rs.next()) {
-                System.out.println("RS: "+r.getInt("pag_codigo"));
                 pag = new BeanPagamento();
                 pag.setPag_codigo(r.getInt("pag_codigo"));
                 pag.setPag_desc(r.getString("pag_desc"));

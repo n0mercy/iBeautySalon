@@ -131,15 +131,21 @@ public class DaoItemServico extends BaseDao {
         }
     }
 
-    public List<BeanItemServico> findItensByCupom(int codigo) throws SQLException {
+    public List<BeanItemServico> findItensByCupom(int codigo, String status) throws SQLException {
         try {
             con = getConnection();
             StringBuilder sb = new StringBuilder();
             sb.append("select * from itemservico i ");
             sb.append("inner join cupom c on c.cupom_codigo = i.itemserv_cupom_codigo ");
-            sb.append("where c.cupom_codigo = ? and c.cupom_status = 'pendente'");
+            sb.append("where c.cupom_codigo = ? "); 
+            if(status != null)
+                sb.append("and c.cupom_status = ?");
+            
             pstm = con.prepareStatement(sb.toString());
-            pstm.setInt(1, codigo);
+            pstm.setInt(1, codigo);            
+            if(status != null)
+                pstm.setString(2, status);
+            
             rs = pstm.executeQuery();
             item = createServico(rs);
             return list;

@@ -13,6 +13,10 @@
         <servlet-name>ControllerPagamento</servlet-name>
         <servlet-class>controller.ControllerPagamento</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ControllerCupom</servlet-name>
+        <servlet-class>controller.ControllerCupom</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.jsf</url-pattern>
@@ -20,6 +24,10 @@
     <servlet-mapping>
         <servlet-name>ControllerPagamento</servlet-name>
         <url-pattern>/ControllerPagamento</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ControllerCupom</servlet-name>
+        <url-pattern>/ControllerCupom</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

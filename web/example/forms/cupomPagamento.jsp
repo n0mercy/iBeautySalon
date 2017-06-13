@@ -29,8 +29,8 @@
         <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css">
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
-        <!-- Ionicons -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+                        <!-- Ionicons -->
+                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
         <!-- Theme style -->
         <link rel="stylesheet" href="../../dist/css/AdminLTE.min.css">
         <!-- AdminLTE Skins. Choose a skin from the css/skins
@@ -64,7 +64,7 @@
                 cupom = new DaoCupom().findByCliente(cliente.getCli_cpf());
                 qrcode = cupom.getCupom_codigo();
                 System.out.print("CUPOM ID: "+qrcode);
-                listItem = new DaoItemServico().findItensByCupom(cupom.getCupom_codigo());
+                listItem = new DaoItemServico().findItensByCupom(cupom.getCupom_codigo(),"pendente");
             } else {
                 System.out.println("Usuário na session = false");
             }
@@ -77,7 +77,7 @@
                 cliente = new DaoCliente().findByUser(usuario.getUsu_codigo());
                 cupom = new DaoCupom().findByCliente(cliente.getCli_cpf());
                 qrcode = cupom.getCupom_codigo();
-                listItem = new DaoItemServico().findItensByCupom(cupom.getCupom_codigo());
+                listItem = new DaoItemServico().findItensByCupom(cupom.getCupom_codigo(),"pendente");
             }
         %>
         <!-- Main content -->

@@ -296,6 +296,9 @@ public class ControllerCliente extends HttpServlet {
 
             //client
             cliente.setCli_nome(request.getParameter("nome"));
+            if(request.getParameter("save").equals("cadClienteFisica"))
+                cliente.setCli_cpf(request.getParameter("cpf"));
+            
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             String dtNasc = request.getParameter("data_nasc");
             try {
